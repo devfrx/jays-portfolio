@@ -1,0 +1,7 @@
+{
+  "name": "jays-portfolio",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
