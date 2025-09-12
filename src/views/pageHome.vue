@@ -173,7 +173,7 @@
             </div>
             <div class="projects-cta">
               <router-link to="/projects" class="view-all-link">
-                <span>View All Projects</span>
+                <span>View Everything</span>
                 <Icon icon="mdi:arrow-right" />
               </router-link>
             </div>
@@ -189,8 +189,10 @@
   import { IonPage, IonContent } from '@ionic/vue'
   import { Icon } from "@iconify/vue"
   import { useHomeData } from '@/composables/useHomeData'
+  import { useProjectsData } from '@/composables/useProjectsData'
 
-  const { techStack, codeLines, featuredProjects } = useHomeData()
+  const { featuredProjects } = useProjectsData()
+  const { techStack, codeLines } = useHomeData()
 </script>
 
 <style scoped>
@@ -215,7 +217,7 @@
   .hero-container {
     max-width: var(--container-max-width);
     margin-inline: auto;
-    margin-top: var(--space-40);
+    margin-top: var(--space-24);
     padding: 0 var(--space-6);
     display: grid;
     grid-template-columns: 1fr 1fr;

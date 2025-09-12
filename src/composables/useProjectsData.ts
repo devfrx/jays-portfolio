@@ -1,13 +1,6 @@
 import { ref, computed } from "vue";
 
 export function useProjectsData() {
-  const stats = ref([
-    { number: "15+", label: "Projects", icon: "mdi:code-braces" },
-    { number: "3+", label: "Years Experience", icon: "mdi:calendar-clock" },
-    { number: "10+", label: "Technologies", icon: "mdi:tools" },
-    { number: "5+", label: "Certifications", icon: "mdi:certificate" },
-  ]);
-
   const featuredProjects = ref([
     {
       id: 1,
@@ -32,6 +25,66 @@ export function useProjectsData() {
       ],
       github: "https://github.com/devfrx/configurator-ecoctrl.git",
       demo: "https://easyorder.ecocontrolgsm.it/login",
+      gallery: [
+        {
+          url: "public/assets/configurator/configuratorHome.png",
+          thumbnail: "public/assets/configurator/configuratorHome.png",
+          caption: "Configurator homepage with quicksearch, favorites and CTAs",
+        },
+        {
+          url: "public/assets/configurator/configuratorCategories.png",
+          thumbnail: "public/assets/configurator/configuratorCategories.png",
+          caption: "Category selection",
+        },
+        {
+          url: "public/assets/configurator/configuratorStep.png",
+          thumbnail: "public/assets/configurator/configuratorStep.png",
+          caption: "Step-by-step configuration wizard",
+        },
+        {
+          url: "public/assets/configurator/configuratorStepConstraints.png",
+          thumbnail:
+            "public/assets/configurator/configuratorStepConstraints.png",
+          caption: "Step-by-step configuration wizard with constraints",
+        },
+        {
+          url: "public/assets/configurator/configuratorStepDetails.png",
+          thumbnail: "public/assets/configurator/configuratorStepDetails.png",
+          caption: "Step-by-step configuration wizard details at the footer",
+        },
+        {
+          url: "public/assets/configurator/configuratorSummary1.png",
+          thumbnail: "public/assets/configurator/configuratorSummary1.png",
+          caption:
+            "Summary page with services included, products management and details and commercial specs",
+        },
+        {
+          url: "public/assets/configurator/configuratorSummary2.png",
+          thumbnail: "public/assets/configurator/configuratorSummary2.png",
+          caption:
+            "Summary page bottom with found tecnical sheets and brochures found in configured products and CTAs",
+        },
+        {
+          url: "public/assets/configurator/configuratorConfirmation.png",
+          thumbnail: "public/assets/configurator/configuratorConfirmation.png",
+          caption: "Customer selection and info and CTAs",
+        },
+        {
+          url: "public/assets/configurator/configuratorSeeQuotes.png",
+          thumbnail: "public/assets/configurator/configuratorSeeQuotes.png",
+          caption: "Digital quotes created page preview",
+        },
+        {
+          url: "public/assets/configurator/configuratorQuote.png",
+          thumbnail: "public/assets/configurator/configuratorQuote.png",
+          caption: "Digital quote preview",
+        },
+        {
+          url: "public/assets/configurator/configuratorBS.png",
+          thumbnail: "public/assets/configurator/configuratorBS.png",
+          caption: "Brochures and tecnical sheets of products",
+        },
+      ],
       files: [
         { name: "src/", icon: "mdi:folder" },
         { name: "components/", icon: "mdi:folder" },
@@ -74,6 +127,31 @@ export function useProjectsData() {
       ],
       github: "https://github.com/domenicotig/recipay-frontend.git",
       demo: "https://app.recipay.it/login",
+      gallery: [
+        {
+          url: "public/assets/recipay/recipayProducts.png",
+          thumbnail: "public/assets/recipay/recipayProducts.png",
+          caption:
+            "Products management page (cashier view, admin has CTAs to manage)",
+        },
+        {
+          url: "public/assets/recipay/recipayDrafts.png",
+          thumbnail: "public/assets/recipay/recipayDrafts.png",
+          caption:
+            "Drafts management page, the cashier can turn drafts into orders or confirm them istantly",
+        },
+        {
+          url: "public/assets/recipay/recipayCashreg.png",
+          thumbnail: "public/assets/recipay/recipayCashreg.png",
+          caption: "Cash register, connected to a receipt printer",
+        },
+        {
+          url: "public/assets/recipay/recipaySettings.png",
+          thumbnail: "public/assets/recipay/recipaySettings.png",
+          caption:
+            "Settings tab, with password reset (managed in laravel) and other settings",
+        },
+      ],
       files: [
         { name: "src/", icon: "mdi:folder" },
         { name: "components/", icon: "mdi:folder" },
@@ -105,8 +183,21 @@ export function useProjectsData() {
       category: "personal",
       icon: "mdi:weather-partly-cloudy",
       technologies: ["JavaScript", "CSS", "HTML"],
-      github: "https://github.com/jays/weather-dashboard",
-      demo: "https://weather.jays.dev",
+      github: "",
+      demo: "https://kamiswear.netlify.app/",
+      gallery: [
+        {
+          url: "public/assets/kamiswear/kamisHome.png",
+          thumbnail: "public/assets/kamiswear/kamisHome.png",
+          caption: "Kamiswear Homepage (Responsive)",
+        },
+        {
+          url: "public/assets/kamiswear/kamis1.png",
+          thumbnail: "public/assets/kamiswear/kamis1.png",
+          caption:
+            "Seasonal products page, no products in the project no more :/",
+        },
+      ],
       files: [
         { name: "src/", icon: "mdi:folder" },
         { name: "components/", icon: "mdi:folder" },
@@ -133,45 +224,43 @@ export function useProjectsData() {
 
   const workExperience = ref([
     {
-      title: "Full Stack Developer",
-      company: "TechCorp Solutions",
+      title: "Frontend (Sometimes backend) Developer",
+      company: "EcocontrolGSM",
       type: "Full-time",
-      period: "2023 - Present",
+      period: "2025 - Present",
       description:
-        "Leading development of enterprise web applications and maintaining legacy systems.",
+        "Developing and maintaining web applications and management softwares.",
       achievements: [
-        "Reduced application load time by 40% through optimization",
-        "Led a team of 3 junior developers",
-        "Implemented CI/CD pipeline reducing deployment time by 60%",
+        "Developed a complex configurator app increasing workflow efficiency, reducing errors and boosting sales.",
+        "Worked closely with product managers to define project scope and requirements.",
+        "Implemented responsive designs to ensure optimal user experience across devices.",
       ],
-      technologies: ["Vue.js", "Node.js", "PostgreSQL", "Docker", "AWS"],
+      technologies: [
+        "Vue.js",
+        "Node.js",
+        "Vite",
+        "SSH",
+        "Aruba Hosting and DB",
+        "MySQL",
+        "Ionic",
+        "TypeScript",
+        "Pinia",
+        "Capacitor",
+      ],
     },
     {
       title: "Frontend Developer",
-      company: "Digital Agency",
-      type: "Contract",
-      period: "2022 - 2023",
-      description:
-        "Developed responsive web applications for various clients in different industries.",
-      achievements: [
-        "Delivered 10+ client projects on time and within budget",
-        "Improved client satisfaction score by 25%",
-        "Mentored new team members on best practices",
-      ],
-      technologies: ["React", "TypeScript", "Sass", "Figma", "Git"],
-    },
-    {
-      title: "Junior Web Developer",
-      company: "StartupXYZ",
-      type: "Full-time",
+      company: "KamisWear",
+      type: "Personal Project",
       period: "2021 - 2022",
-      description: "Built and maintained company website and internal tools.",
+      description:
+        "Built and maintained the e-commerce website for a clothing brand.",
       achievements: [
-        "Developed company's first mobile-responsive website",
-        "Created internal dashboard reducing manual work by 30%",
-        "Collaborated with design team to improve UX",
+        "This Project was a big step for me, I learned a lot of new things and started understanding how to manage a real project.",
+        "Tried to implement best practices and write clean code",
+        "Learned and implemented SEO strategies",
       ],
-      technologies: ["HTML", "CSS", "JavaScript", "PHP", "MySQL"],
+      technologies: ["HTML", "Javascript", "CSS3", "Git"],
     },
   ]);
 
@@ -265,7 +354,6 @@ export function useProjectsData() {
   });
 
   return {
-    stats,
     featuredProjects,
     workExperience,
     education,

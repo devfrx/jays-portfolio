@@ -39,7 +39,7 @@
                         </div>
 
                         <!-- Stats -->
-                        <div class="stats-grid">
+                        <!-- <div class="stats-grid">
                             <div class="stat-card" v-for="stat in stats" :key="stat.label">
                                 <div class="stat-icon">
                                     <Icon :icon="stat.icon" />
@@ -49,7 +49,7 @@
                                     <div class="stat-label">{{ stat.label }}</div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </section>
 
@@ -81,7 +81,7 @@
                                                                 <span class="control control--maximize"></span>
                                                             </div>
                                                             <div class="browser-url">{{ project.demo || 'localhost:3000'
-                                                                }}</div>
+                                                            }}</div>
                                                             <div class="browser-actions">
                                                                 <Icon icon="mdi:refresh" />
                                                                 <Icon icon="mdi:dots-horizontal" />
@@ -178,6 +178,11 @@
                                                     </div>
                                                 </div>
 
+                                                <!-- Gallery Modal -->
+                                                <ImageGallery :is-open="galleryOpen"
+                                                    :images="selectedProject?.gallery || []"
+                                                    :initial-index="galleryIndex" :project="selectedProject"
+                                                    @close="closeGallery" />
                                                 <!-- Project Stats -->
                                                 <!-- <div class="project-stats">
                                                     <div class="stat">
@@ -193,6 +198,25 @@
                                                         <span>{{ project.stats?.views || 'N/A' }}</span>
                                                     </div>
                                                 </div> -->
+                                            </div>
+
+                                            <div class="project-gallery" v-if="project.gallery?.length">
+                                                <h4 class="gallery-title">Screenshots</h4>
+                                                <div class="gallery-preview">
+                                                    <div v-for="(image, index) in project.gallery.slice(0, 3)"
+                                                        :key="index" class="gallery-thumb"
+                                                        @click="openGallery(project, index)">
+                                                        <img :src="image.thumbnail || image.url" :alt="image.caption"
+                                                            loading="lazy" />
+                                                        <div class="thumb-overlay">
+                                                            <Icon icon="mdi:magnify" />
+                                                        </div>
+                                                    </div>
+                                                    <div v-if="project.gallery.length > 3" class="gallery-more"
+                                                        @click="openGallery(project, 0)">
+                                                        <span>+{{ project.gallery.length - 3 }} more</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -267,7 +291,7 @@
                 </section>
 
                 <!-- Education -->
-                <section class="education">
+                <!-- <section class="education">
                     <div class="section-container">
                         <div class="section-header">
                             <span class="section-number">03.</span>
@@ -289,13 +313,13 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> -->
 
                 <!-- All Projects -->
                 <section class="all-projects">
                     <div class="section-container">
                         <div class="section-header">
-                            <span class="section-number">04.</span>
+                            <span class="section-number">03.</span>
                             <h2 class="section-title">All Projects</h2>
                             <div class="section-line"></div>
                         </div>
@@ -343,9 +367,9 @@
     import { IonPage, IonContent } from '@ionic/vue'
     import { Icon } from "@iconify/vue"
     import { useProjectsData } from '@/composables/useProjectsData'
+    import ImageGallery from '@/components/ImageGallery.vue'
 
     const {
-        stats,
         featuredProjects,
         workExperience,
         education,
@@ -354,6 +378,24 @@
         activeFilter,
         filteredProjects
     } = useProjectsData()
+
+    // Gallery state
+    const galleryOpen = ref(false)
+    const selectedProject = ref(null)
+    const galleryIndex = ref(0)
+    const githubUsername = ref('your-github-username') // Replace with your GitHub username
+
+    const openGallery = (project: any, index: number = 0) => {
+        selectedProject.value = project
+        galleryIndex.value = index
+        galleryOpen.value = true
+    }
+
+    const closeGallery = () => {
+        galleryOpen.value = false
+        selectedProject.value = null
+        galleryIndex.value = 0
+    }
 
     // Carousel logic
     const currentSlide = ref(0)
@@ -605,6 +647,7 @@
 
     .carousel-container {
         overflow: hidden;
+        height: auto;
         border-radius: var(--radius-xl);
         background: rgba(var(--color-surface-dark-rgb), 0.3);
         backdrop-filter: blur(var(--blur-md));
@@ -1059,6 +1102,86 @@
     .nav-button:disabled {
         opacity: 0.5;
         cursor: not-allowed;
+    }
+
+    /* Gallery Styles */
+    .project-gallery {
+        margin-bottom: var(--space-2);
+    }
+
+    .gallery-title {
+        color: var(--color-white);
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-semibold);
+        margin-bottom: var(--space-4);
+    }
+
+    .gallery-preview {
+        display: flex;
+        flex-direction: row;
+        gap: var(--space-3);
+    }
+
+    .gallery-thumb {
+        position: relative;
+        aspect-ratio: 16/9;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        cursor: pointer;
+        transition: var(--transition-all);
+    }
+
+    .gallery-thumb:hover {
+        transform: scale(1.05);
+    }
+
+    .gallery-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition-all);
+    }
+
+    .thumb-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(var(--color-bg-dark-rgb), 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-primary);
+        font-size: var(--font-size-xl);
+        opacity: 0;
+        transition: var(--transition-opacity);
+    }
+
+    .gallery-thumb:hover .thumb-overlay {
+        opacity: 1;
+    }
+
+    .gallery-more {
+        display: flex;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        background: rgba(var(--color-primary-rgb), 0.1);
+        border: 2px dashed rgba(var(--color-primary-rgb), 0.3);
+        border-radius: var(--radius-md);
+        color: var(--color-primary);
+        cursor: pointer;
+        transition: var(--transition-all);
+        font-weight: var(--font-weight-semibold);
+    }
+
+    .gallery-more:hover {
+        background: rgba(var(--color-primary-rgb), 0.2);
+        border-color: var(--color-primary);
+    }
+
+    /* GitHub Section */
+    .github-section {
+        background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.05), rgba(var(--color-accent-rgb), 0.02));
+        border-top: 1px solid rgba(var(--color-primary-rgb), 0.1);
     }
 
     /* Carousel Indicators */

@@ -21,7 +21,7 @@ export function useAboutData() {
       icon: "mdi:school",
       title: "Learning & Growing",
       content:
-        "Through formal education and countless hours of self-learning, I've developed a strong foundation in computer science principles while staying current with modern technologies and best practices.",
+        "Through formal education and countless hours of self-learning, I've developed a strong foundation in software technologies principles while staying current with modern technologies and best practices.",
     },
     {
       id: 3,
@@ -128,45 +128,47 @@ export function useAboutData() {
 
   const interests = ref([
     {
-      name: "Photography",
-      icon: "mdi:camera",
+      name: "Guitar",
+      icon: "mdi:guitar-acoustic",
       description:
-        "Capturing moments and exploring composition teaches me to see details and beauty in everyday life.",
+        "Playing guitar allows me to express my creativity and unwind after a long day of coding.",
     },
     {
       name: "Gaming",
       icon: "mdi:controller-classic",
       description:
-        "From indie games to AAA titles, gaming inspires my creativity and keeps me connected to interactive design trends.",
+        "Gaming sharpens my problem-solving skills and I LOVE PLAYING GAMES!!",
     },
     {
-      name: "Music Production",
-      icon: "mdi:music",
+      name: "Bodybuilding",
+      icon: "mdi:dumbbell",
       description:
-        "Creating music helps me understand rhythm, structure, and the emotional impact of digital creativity.",
-    },
-    {
-      name: "Fitness & Running",
-      icon: "mdi:run",
-      description:
-        "Staying active keeps my mind sharp and provides the energy needed for long coding sessions.",
+        "Staying fit and healthy is important to me, and bodybuilding helps me build discipline and resilience.",
     },
   ]);
 
   const funFacts = ref([
-    { id: 1, emoji: "☕", text: "I drink at least 4 cups of coffee per day" },
+    {
+      id: 1,
+      emoji: "☕",
+      text: "I drink at least 1 deca cup of coffee per day",
+    },
     { id: 2, emoji: "🌙", text: "I do my best coding late at night" },
     { id: 3, emoji: "🐛", text: "I actually enjoy debugging complex issues" },
     {
       id: 4,
       emoji: "📚",
-      text: "I have 50+ programming books in my collection",
+      text: "I have 6/7+ programming books in my collection",
     },
-    { id: 5, emoji: "🎮", text: "I built my first game when I was 16" },
+    {
+      id: 5,
+      emoji: "🎮",
+      text: "I Tried to build my first game when I was 16",
+    },
     {
       id: 6,
       emoji: "🚀",
-      text: "I dream of contributing to space technology someday",
+      text: "I dream of working with a big tech company someday",
     },
   ]);
 

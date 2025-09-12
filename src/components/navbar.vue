@@ -266,9 +266,9 @@
 
     /* CTA Button */
     .nav-link--cta {
-        background: linear-gradient(135deg, #0a0f19, #1a2332);
-        border: 1px solid var(--color-primary-light);
-        color: var(--color-primary-light) !important;
+        background: linear-gradient(135deg, #0a0f19, #1a1a1a);
+        border: 1px solid var(--color-accent-light);
+        color: var(--color-accent-light) !important;
         padding: var(--space-2_5) var(--space-5);
         border-radius: var(--radius-md);
         font-weight: var(--font-weight-semibold);
@@ -283,8 +283,8 @@
 
     .nav-link--cta:hover {
         transform: translateY(-2px);
-        box-shadow: 0 0 25px rgba(var(--color-accent-light-rgb), 0.5);
-        border-color: var(--color-primary);
+        box-shadow: 0 0 25px rgba(var(--color-accent-light-rgb), .3);
+        border-color: var(--color-accent);
     }
 
     .nav-link--cta:hover::before {
@@ -399,7 +399,7 @@
     }
 
     .mobile-nav-link--cta {
-        background: linear-gradient(135deg, #0a0f19, #1a2d32);
+        background: linear-gradient(135deg, #0a0f19, #1b1b1b);
         border: 1px solid var(--color-primary-light);
         color: var(--color-primary-light) !important;
         font-weight: var(--font-weight-semibold);

@@ -50,14 +50,27 @@
                                         <span class="status-text">Available for work</span>
                                     </div>
                                 </div>
-                                <div class="profile-stats">
+                                <!-- <div class="profile-stats">
                                     <div class="stat-item" v-for="stat in profileStats" :key="stat.label">
                                         <span class="stat-value">{{ stat.value }}</span>
                                         <span class="stat-label">{{ stat.label }}</span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
+                    </div>
+                </section>
+
+                <!-- Add GitHub Activity Section -->
+                <section class="github-section">
+                    <div class="section-container">
+                        <div class="section-header">
+                            <span class="section-number">01.</span>
+                            <h2 class="section-title">GitHub Activity</h2>
+                            <div class="section-line"></div>
+                        </div>
+
+                        <GitHubActivity :username="githubUsername" />
                     </div>
                 </section>
 
@@ -65,7 +78,7 @@
                 <section class="story-section">
                     <div class="section-container">
                         <div class="section-header">
-                            <span class="section-number">01.</span>
+                            <span class="section-number">02.</span>
                             <h2 class="section-title">My Journey</h2>
                             <div class="section-line"></div>
                         </div>
@@ -101,7 +114,7 @@
                 </section>
 
                 <!-- Skills & Expertise -->
-                <section class="skills-section">
+                <!-- <section class="skills-section">
                     <div class="section-container">
                         <div class="section-header">
                             <span class="section-number">02.</span>
@@ -129,7 +142,7 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> -->
 
                 <!-- Values & Principles -->
                 <section class="values-section">
@@ -230,6 +243,8 @@
     import { IonPage, IonContent } from '@ionic/vue'
     import { Icon } from "@iconify/vue"
     import { useAboutData } from '@/composables/useAboutData'
+    import GitHubActivity from '@/components/GitHubActivity.vue'
+    const githubUsername = ref('devfrx') // Replace with your GitHub username
 
     const {
         profileStats,

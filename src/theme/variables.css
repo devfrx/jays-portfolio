@@ -1,11 +1,11 @@
 /* COLOR PALETTE */
 :root {
     /* Primary colors */
-    --color-primary: #8848ff;
+    --color-primary: #7f48ff;
     --color-primary-rgb: 136, 72, 255;
-    --color-primary-light: #bc82ff;
+    --color-primary-light: #ae82ff;
     --color-primary-light-rgb: 188, 130, 255;
-    --color-primary-dark: #3a1580;
+    --color-primary-dark: #321580;
     --color-primary-dark-rgb: 58, 21, 128;
     --color-primary-50: #f4f0ff;
     --color-primary-50-rgb: 244, 240, 255;
