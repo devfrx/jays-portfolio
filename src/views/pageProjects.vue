@@ -1350,6 +1350,12 @@
         gap: var(--space-2);
     }
 
+    .project-tech {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+    }
+
     .tech-tag {
         background: rgba(var(--color-primary-rgb), 0.1);
         color: var(--color-primary);

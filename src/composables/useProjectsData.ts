@@ -306,29 +306,9 @@ export function useProjectsData() {
         "Personal portfolio built with Vue.js and modern design principles.",
       category: "personal",
       icon: "mdi:account",
-      technologies: ["Vue.js", "TypeScript", "CSS3", "Vite"],
+      technologies: ["Vue.js", "TypeScript", "CSS3", "Vite", "GraphQL"],
       github: "https://github.com/jays/portfolio",
       demo: "https://jays.dev",
-    },
-    {
-      id: 5,
-      title: "Expense Tracker",
-      description: "Mobile-first expense tracking app with data visualization.",
-      category: "personal",
-      icon: "mdi:chart-line",
-      technologies: ["React Native", "Firebase", "Chart.js"],
-      github: "https://github.com/jays/expense-tracker",
-    },
-    {
-      id: 6,
-      title: "Blog CMS",
-      description:
-        "Content management system for technical blogs with markdown support.",
-      category: "work",
-      icon: "mdi:post",
-      technologies: ["Nuxt.js", "Strapi", "GraphQL", "PostgreSQL"],
-      github: "https://github.com/jays/blog-cms",
-      demo: "https://blog-cms.jays.dev",
     },
   ]);
 
