@@ -76,11 +76,12 @@
         isOpen: boolean
         images: GalleryImage[]
         initialIndex?: number
-        project?: { title: string | null }
+        project?: { title: string } | null
     }
 
     const props = withDefaults(defineProps<Props>(), {
-        initialIndex: 0
+        initialIndex: 0,
+        project: null
     })
 
     const emit = defineEmits<{

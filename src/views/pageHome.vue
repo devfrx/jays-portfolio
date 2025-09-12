@@ -167,7 +167,7 @@
                 <h3 class="project-title">{{ project.title }}</h3>
                 <p class="project-description">{{ project.description }}</p>
                 <div class="project-tech">
-                  <span v-for="tech in project.tech" :key="tech" class="tech-tag">{{ tech }}</span>
+                  <span v-for="tech in project.technologies" :key="tech" class="tech-tag">{{ tech }}</span>
                 </div>
               </div>
             </div>

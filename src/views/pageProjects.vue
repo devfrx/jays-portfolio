@@ -200,7 +200,8 @@
                                                 </div> -->
                                             </div>
 
-                                            <div class="project-gallery" v-if="project.gallery?.length">
+                                            <div class="project-gallery"
+                                                v-if="project.gallery && project.gallery.length">
                                                 <h4 class="gallery-title">Screenshots</h4>
                                                 <div class="gallery-preview">
                                                     <div v-for="(image, index) in project.gallery.slice(0, 3)"
@@ -379,11 +380,11 @@
         filteredProjects
     } = useProjectsData()
 
-    // Gallery state
+    // Gallery state con tipi corretti
     const galleryOpen = ref(false)
-    const selectedProject = ref(null)
+    const selectedProject = ref<any>(null)  // Cambia da null a any
     const galleryIndex = ref(0)
-    const githubUsername = ref('your-github-username') // Replace with your GitHub username
+    const githubUsername = ref('devfrx') // Il tuo username GitHub
 
     const openGallery = (project: any, index: number = 0) => {
         selectedProject.value = project
