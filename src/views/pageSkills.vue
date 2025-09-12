@@ -153,25 +153,12 @@
                     <div class="section-container">
                         <div class="section-header">
                             <span class="section-number">03.</span>
-                            <h2 class="section-title">Certifications</h2>
+                            <h2 class="section-title">Certifications & Achievements</h2>
                             <div class="section-line"></div>
                         </div>
 
-                        <div class="certifications-grid">
-                            <div class="cert-card" v-for="cert in certifications" :key="cert.title">
-                                <div class="cert-icon">
-                                    <Icon :icon="cert.icon" :style="{ color: cert.color }" />
-                                </div>
-                                <div class="cert-content">
-                                    <h3 class="cert-title">{{ cert.title }}</h3>
-                                    <div class="cert-issuer">{{ cert.issuer }}</div>
-                                    <div class="cert-meta">
-                                        <span class="cert-date">{{ cert.date }}</span>
-                                        <span class="cert-level">{{ cert.level }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <CertificationShowcase :certifications="certifications"
+                            @view-certificate="handleViewCertificate" @verify-certificate="handleVerifyCertificate" />
                     </div>
                 </section>
 
@@ -264,6 +251,7 @@
     import { IonPage, IonContent } from '@ionic/vue'
     import { Icon } from "@iconify/vue"
     import { useSkillsData } from '@/composables/useSkillsData'
+    import CertificationShowcase from '@/components/CertificationShowcase.vue'
 
     const {
         skillsStats,
@@ -273,6 +261,20 @@
         currentlyLearning,
         topSkills
     } = useSkillsData()
+
+    // Certificate handlers
+    const handleViewCertificate = (cert: any) => {
+        if (cert.credentialUrl) {
+            window.open(cert.credentialUrl, '_blank', 'noopener,noreferrer')
+        }
+    }
+
+    const handleVerifyCertificate = (cert: any) => {
+        // You could implement a verification modal or redirect to verification page
+        if (cert.verificationId) {
+            alert(`Verification ID: ${cert.verificationId}\n\nYou can verify this certificate with the issuer using this ID.`)
+        }
+    }
 </script>
 
 <style scoped>
@@ -788,63 +790,6 @@
         font-family: var(--font-mono);
     }
 
-    /* Certifications */
-    .certifications-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: var(--space-6);
-    }
-
-    .cert-card {
-        background: rgba(var(--color-surface-dark-rgb), 0.8);
-        border: 1px solid rgba(var(--color-primary-rgb), 0.3);
-        border-radius: var(--radius-lg);
-        padding: var(--space-6);
-        display: flex;
-        gap: var(--space-4);
-        transition: var(--transition-all);
-    }
-
-    .cert-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.3);
-    }
-
-    .cert-icon {
-        font-size: var(--font-size-3xl);
-        flex-shrink: 0;
-    }
-
-    .cert-title {
-        color: var(--color-white);
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-bold);
-        margin-bottom: var(--space-1);
-    }
-
-    .cert-issuer {
-        color: var(--color-primary);
-        font-weight: var(--font-weight-medium);
-        margin-bottom: var(--space-2);
-    }
-
-    .cert-meta {
-        display: flex;
-        gap: var(--space-3);
-        font-size: var(--font-size-sm);
-    }
-
-    .cert-date {
-        color: var(--color-text-muted);
-    }
-
-    .cert-level {
-        background: rgba(var(--color-primary-rgb), 0.1);
-        color: var(--color-primary);
-        padding: var(--space-1) var(--space-2);
-        border-radius: var(--radius-sm);
-    }
-
     /* Currently Learning */
     .learning-cards {
         display: flex;
@@ -1078,10 +1023,6 @@
 
         .page-title {
             font-size: var(--font-size-3xl);
-        }
-
-        .certifications-grid {
-            grid-template-columns: 1fr;
         }
     }
 
