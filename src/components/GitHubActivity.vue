@@ -351,19 +351,34 @@
 
             const events = await eventsResponse.json()
 
-            // Filter and transform events
-            const relevantEventTypes = ['PushEvent', 'CreateEvent', 'IssuesEvent', 'PullRequestEvent', 'WatchEvent', 'ForkEvent', 'ReleaseEvent', 'PublicEvent']
+            // Se la risposta è un array di commit (non eventi), mappa i commit come attività "push"
+            let activityList: GitHubActivity[] = []
 
-            activities.value = events
-                .filter((event: any) => relevantEventTypes.includes(event.type))
-                .slice(0, 10)
-                .map((event: any) => ({
-                    id: event.id,
-                    type: event.type.replace('Event', '').toLowerCase(),
-                    text: generateActivityText(event),
-                    repo: event.repo.name,
-                    created_at: event.created_at
+            if (Array.isArray(events) && events.length && !events[0].type && events[0].commit) {
+                // È un array di commit
+                activityList = events.slice(0, 10).map((commit: any) => ({
+                    id: commit.sha,
+                    type: 'push',
+                    text: `Committed <strong>${commit.commit.message.split('\n')[0]}</strong>`,
+                    repo: `${props.username}/${commit.repository?.name || 'jays-portfolio'}`,
+                    created_at: commit.commit.author.date
                 }))
+            } else if (Array.isArray(events)) {
+                // È un array di eventi GitHub classici
+                const relevantEventTypes = ['PushEvent', 'CreateEvent', 'IssuesEvent', 'PullRequestEvent', 'WatchEvent', 'ForkEvent', 'ReleaseEvent', 'PublicEvent']
+                activityList = events
+                    .filter((event: any) => relevantEventTypes.includes(event.type))
+                    .slice(0, 10)
+                    .map((event: any) => ({
+                        id: event.id,
+                        type: event.type.replace('Event', '').toLowerCase(),
+                        text: generateActivityText(event),
+                        repo: event.repo.name,
+                        created_at: event.created_at
+                    }))
+            }
+
+            activities.value = activityList
             console.log('Fetched activities:', activities.value)
 
             // Fetch contributions (with fallback)
