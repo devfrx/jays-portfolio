@@ -108,7 +108,7 @@
     const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
     // GitHub API configuration
-    const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN
+    const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN_ENV
     const API_BASE = 'https://api.github.com'
 
     // Computed property per i mesi visibili
