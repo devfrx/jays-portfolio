@@ -364,6 +364,7 @@
                     repo: event.repo.name,
                     created_at: event.created_at
                 }))
+            console.log('Fetched activities:', activities.value)
 
             // Fetch contributions (with fallback)
             try {
