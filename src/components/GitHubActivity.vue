@@ -107,10 +107,6 @@
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-    // GitHub API configuration
-    const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN_ENV
-    const API_BASE = 'https://api.github.com'
-
     // Computed property per i mesi visibili
     const visibleMonths = computed(() => {
         if (contributionData.value.length === 0) return []
@@ -305,48 +301,13 @@
         }
     }
 
+
     const fetchContributionData = async (): Promise<ContributionDay[][]> => {
-        if (!GITHUB_TOKEN) {
-            console.warn('GitHub token not found - using mock contribution data')
-            throw new Error('GitHub token required for contribution data')
-        }
-
-        const query = `
-    query {
-      user(login: "${props.username}") {
-        contributionsCollection {
-          contributionCalendar {
-            weeks {
-              contributionDays {
-                date
-                contributionCount
-                contributionLevel
-              }
-            }
-          }
-        }
-      }
-    }
-  `
-
-        const response = await fetch('https://api.github.com/graphql', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${GITHUB_TOKEN}`
-            },
-            body: JSON.stringify({ query })
-        })
-
-        if (!response.ok) {
-            throw new Error(`GraphQL request failed: ${response.status}`)
-        }
-
+        // Chiamata al proxy serverless
+        const response = await fetch(`/api/github?action=contributions&user=${props.username}`)
+        if (!response.ok) throw new Error(`Proxy error: ${response.status}`)
         const result = await response.json()
-
-        if (result.errors) {
-            throw new Error(result.errors[0].message)
-        }
+        if (result.errors) throw new Error(result.errors[0].message)
 
         const levelMap: Record<string, number> = {
             'NONE': 0,
@@ -365,25 +326,14 @@
         )
     }
 
+
     const fetchGitHubActivity = async () => {
         try {
             loading.value = true
             error.value = ''
 
-            // Setup headers
-            const headers: Record<string, string> = {
-                'Accept': 'application/vnd.github+json',
-                'X-GitHub-Api-Version': '2022-11-28'
-            }
-
-            if (GITHUB_TOKEN) {
-                headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`
-            }
-
-            // Fetch user events
-            const eventsResponse = await fetch(`${API_BASE}/users/${props.username}/events/public?per_page=10`, {
-                headers
-            })
+            // Chiamata al proxy serverless
+            const eventsResponse = await fetch(`/api/github?action=activity&user=${props.username}`)
 
             if (eventsResponse.status === 404) {
                 throw new Error('GitHub user not found')
