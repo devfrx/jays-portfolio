@@ -72,9 +72,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (token) headers.Authorization = `Bearer ${token}`;
 
     const r2 = await fetch(
-      `https://api.github.com/repos/${encodeURIComponent(
-        user
-      )}/${encodeURIComponent(repo)}/commits?per_page=10`,
+      `https://api.github.com/repos/${user}/${repo}/commits?per_page=10`,
       { headers }
     );
 
