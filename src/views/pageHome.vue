@@ -189,7 +189,7 @@
                   </div>
                 </div>
 
-                <!-- Status Panel -->
+                <!-- Status Panels -->
                 <div class="side-panel status-panel">
                   <div class="panel-header">
                     <Icon icon="mdi:pulse" />
