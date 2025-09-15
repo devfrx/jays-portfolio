@@ -1,8 +1,15 @@
 import { ref, computed } from "vue";
-import type { Certification } from "@/interfaces/certifications";
+import type {
+  SkillCategory,
+  Skill,
+  StatsItem,
+  LearningPathPhase,
+  Certification,
+  LearningItem,
+} from "@/interfaces/skills";
 
 export function useSkillsData() {
-  const skillsStats = ref([
+  const skillsStats = ref<StatsItem[]>([
     { number: "4+", label: "Projects", icon: "mdi:code-braces" },
     {
       number: "1+",
@@ -20,7 +27,7 @@ export function useSkillsData() {
     { number: "∞", label: "Always Learning", icon: "mdi:brain" },
   ]);
 
-  const detailedSkills = ref([
+  const detailedSkills = ref<SkillCategory[]>([
     {
       category: "Frontend Technologies",
       icon: "mdi:monitor-dashboard",
@@ -178,7 +185,7 @@ export function useSkillsData() {
     },
   ]);
 
-  const learningPath = ref([
+  const learningPath = ref<LearningPathPhase[]>([
     {
       year: "2021",
       phase: "Foundation",
@@ -303,7 +310,7 @@ export function useSkillsData() {
     },
   ]);
 
-  const currentlyLearning = ref([
+  const currentlyLearning = ref<LearningItem[]>([
     {
       name: "TypeScript",
       progress: 45,

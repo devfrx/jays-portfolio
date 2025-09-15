@@ -1,7 +1,13 @@
 import { ref, computed } from "vue";
+import type {
+  Project,
+  WorkExperience,
+  EducationItem,
+  ProjectFilter,
+} from "@/interfaces/projects";
 
 export function useProjectsData() {
-  const featuredProjects = ref([
+  const featuredProjects = ref<Project[]>([
     {
       id: 1,
       title: "Easyorder",
@@ -222,7 +228,7 @@ export function useProjectsData() {
     },
   ]);
 
-  const workExperience = ref([
+  const workExperience = ref<WorkExperience[]>([
     {
       title: "Frontend (Sometimes backend) Developer",
       company: "EcocontrolGSM",
@@ -264,7 +270,7 @@ export function useProjectsData() {
     },
   ]);
 
-  const education = ref([
+  const education = ref<EducationItem[]>([
     {
       id: 1,
       title: "Computer Science Degree",
@@ -297,7 +303,7 @@ export function useProjectsData() {
     },
   ]);
 
-  const allProjects = ref([
+  const allProjects = ref<Project[]>([
     ...featuredProjects.value,
     {
       id: 4,
@@ -321,7 +327,7 @@ export function useProjectsData() {
 
   const activeFilter = ref("all");
 
-  const filteredProjects = computed(() => {
+  const filteredProjects = computed<Project[]>(() => {
     if (activeFilter.value === "all") {
       return allProjects.value;
     } else if (activeFilter.value === "featured") {

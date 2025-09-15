@@ -1,14 +1,22 @@
 import { ref } from "vue";
+import type {
+  ProfileStat,
+  StoryParagraph,
+  TimelineEvent,
+  ValueItem,
+  Interest,
+  FunFact,
+} from "@/interfaces/about";
 
 export function useAboutData() {
-  const profileStats = ref([
+  const profileStats = ref<ProfileStat[]>([
     { value: "3+", label: "Years Coding" },
     { value: "15+", label: "Projects" },
     { value: "10+", label: "Technologies" },
     { value: "∞", label: "Learning" },
   ]);
 
-  const storyParagraphs = ref([
+  const storyParagraphs = ref<StoryParagraph[]>([
     {
       id: 1,
       icon: "mdi:rocket-launch",
@@ -32,7 +40,7 @@ export function useAboutData() {
     },
   ]);
 
-  const timelineEvents = ref([
+  const timelineEvents = ref<TimelineEvent[]>([
     {
       year: "2021",
       title: "First Steps",
@@ -59,43 +67,7 @@ export function useAboutData() {
     },
   ]);
 
-  const skillCategories = ref([
-    {
-      name: "Frontend Development",
-      icon: "mdi:monitor-dashboard",
-      skills: [
-        { name: "Vue.js", level: 90 },
-        { name: "JavaScript", level: 88 },
-        { name: "TypeScript", level: 85 },
-        { name: "HTML/CSS", level: 95 },
-        { name: "Nuxt.js", level: 80 },
-      ],
-    },
-    {
-      name: "Backend Development",
-      icon: "mdi:server",
-      skills: [
-        { name: "Node.js", level: 82 },
-        { name: "PHP", level: 75 },
-        { name: "Java", level: 70 },
-        { name: "C", level: 65 },
-        { name: "Databases", level: 78 },
-      ],
-    },
-    {
-      name: "Tools & Technologies",
-      icon: "mdi:tools",
-      skills: [
-        { name: "Git", level: 92 },
-        { name: "Docker", level: 70 },
-        { name: "AWS", level: 68 },
-        { name: "Vite", level: 85 },
-        { name: "Figma", level: 75 },
-      ],
-    },
-  ]);
-
-  const values = ref([
+  const values = ref<ValueItem[]>([
     {
       title: "Clean Code",
       icon: "mdi:code-braces",
@@ -126,7 +98,7 @@ export function useAboutData() {
     },
   ]);
 
-  const interests = ref([
+  const interests = ref<Interest[]>([
     {
       name: "Guitar",
       icon: "mdi:guitar-acoustic",
@@ -147,7 +119,7 @@ export function useAboutData() {
     },
   ]);
 
-  const funFacts = ref([
+  const funFacts = ref<FunFact[]>([
     {
       id: 1,
       emoji: "☕",
@@ -176,7 +148,6 @@ export function useAboutData() {
     profileStats,
     storyParagraphs,
     timelineEvents,
-    skillCategories,
     values,
     interests,
     funFacts,

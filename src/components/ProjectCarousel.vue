@@ -161,28 +161,7 @@
 <script setup lang="ts">
     import { ref, onMounted, onUnmounted, watch } from 'vue'
     import { Icon } from '@iconify/vue'
-
-    interface Project {
-        id: number
-        title: string
-        description: string
-        type: string
-        year: string
-        icon: string
-        technologies: string[]
-        github?: string
-        demo?: string
-        gallery?: Array<{
-            url: string
-            thumbnail?: string
-            caption?: string
-        }>
-        files: Array<{
-            name: string
-            icon: string
-        }>
-        codePreview: string[]
-    }
+    import type { Project } from '@/interfaces/projects'
 
     interface Props {
         projects: Project[]

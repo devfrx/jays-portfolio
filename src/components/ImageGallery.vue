@@ -65,12 +65,7 @@
 <script setup lang="ts">
     import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
     import { Icon } from '@iconify/vue'
-
-    interface GalleryImage {
-        url: string
-        thumbnail?: string
-        caption?: string
-    }
+    import type { GalleryImage } from '@/interfaces/imageGallery'
 
     interface Props {
         isOpen: boolean

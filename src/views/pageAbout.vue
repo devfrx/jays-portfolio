@@ -250,7 +250,6 @@
         profileStats,
         storyParagraphs,
         timelineEvents,
-        skillCategories,
         values,
         interests,
         funFacts

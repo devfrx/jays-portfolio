@@ -27,29 +27,5 @@ export function useHomeData() {
     `}`,
   ]);
 
-  const featuredProjects = ref([
-    {
-      id: 1,
-      title: "E-Commerce Platform",
-      description:
-        "Modern e-commerce solution built with Vue.js and Node.js, featuring real-time updates and secure payments.",
-      tech: ["Vue.js", "Node.js", "MongoDB", "Stripe"],
-    },
-    {
-      id: 2,
-      title: "Task Management App",
-      description:
-        "Collaborative task management tool with real-time synchronization and team collaboration features.",
-      tech: ["React", "Firebase", "Tailwind", "PWA"],
-    },
-    {
-      id: 3,
-      title: "Weather Dashboard",
-      description:
-        "Beautiful weather application with location-based forecasts and interactive data visualizations.",
-      tech: ["Vue.js", "Chart.js", "API", "CSS3"],
-    },
-  ]);
-
-  return { techStack, codeLines, featuredProjects };
+  return { techStack, codeLines };
 }

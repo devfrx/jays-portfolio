@@ -89,20 +89,7 @@
 <script setup lang="ts">
     import { ref, onMounted, computed } from 'vue'
     import { Icon } from '@iconify/vue'
-
-    interface GitHubActivity {
-        id: string
-        type: string
-        text: string
-        repo: string
-        created_at: string
-    }
-
-    interface ContributionDay {
-        date: string
-        count: number
-        level: number // 0-4 based on contribution intensity
-    }
+    import type { GitHubActivity, ContributionDay } from '@/interfaces/githubActivity'
 
     const props = withDefaults(defineProps<{
         username?: string

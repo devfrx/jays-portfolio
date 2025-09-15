@@ -147,7 +147,9 @@
 <script setup lang="ts">
     import { computed } from 'vue'
     import { Icon } from '@iconify/vue'
-    import type { Certification } from '@/interfaces/certifications'
+    import type {
+        Certification,
+    } from "@/interfaces/skills";
 
     interface Props {
         certifications: Certification[]
