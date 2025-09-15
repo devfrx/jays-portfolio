@@ -4,71 +4,44 @@
             <div class="carousel-track" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
                 <div class="carousel-slide" v-for="project in projects" :key="project.id">
                     <div class="project-showcase">
-                        <!-- Project Visual -->
+                        <!-- Project Gallery -->
                         <div class="project-visual">
-                            <div class="project-screen">
-                                <!-- Mockup Browser Window -->
-                                <div class="browser-frame">
-                                    <div class="browser-header">
-                                        <div class="browser-controls">
-                                            <span class="control control--close"></span>
-                                            <span class="control control--minimize"></span>
-                                            <span class="control control--maximize"></span>
+                            <div class="gallery-container">
+                                <!-- Main Image -->
+                                <div class="main-image-container">
+                                    <img :src="getCurrentImage(project)?.url || '/placeholder.jpg'"
+                                        :alt="getCurrentImage(project)?.caption || project.title" class="main-image"
+                                        @click="openGallery(project, currentImageIndex[project.id] || 0)" />
+                                    <div class="image-overlay" v-if="project.gallery && project.gallery.length > 0">
+                                        <div class="gallery-info">
+                                            <Icon icon="mdi:image-multiple" />
+                                            <span>{{ project.gallery.length }} images</span>
                                         </div>
-                                        <div class="browser-url">{{ project.demo || 'localhost:3000' }}</div>
-                                        <div class="browser-actions">
-                                            <Icon icon="mdi:refresh" />
-                                            <Icon icon="mdi:dots-horizontal" />
-                                        </div>
+                                        <button class="zoom-button"
+                                            @click="openGallery(project, currentImageIndex[project.id] || 0)">
+                                            <Icon icon="mdi:magnify-plus" />
+                                        </button>
                                     </div>
-                                    <div class="browser-content">
-                                        <!-- Code Preview -->
-                                        <div class="code-preview">
-                                            <div class="code-editor">
-                                                <div class="editor-sidebar">
-                                                    <div class="file-tree">
-                                                        <div class="file-item" v-for="(file, index) in project.files"
-                                                            :key="index">
-                                                            <Icon :icon="file.icon" />
-                                                            <span>{{ file.name }}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="editor-main">
-                                                    <div class="editor-tabs">
-                                                        <div class="tab active">
-                                                            <Icon icon="mdi:vuejs" />
-                                                            <span>App.vue</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="editor-content">
-                                                        <div class="code-lines">
-                                                            <div class="code-line"
-                                                                v-for="(line, index) in project.codePreview"
-                                                                :key="index">
-                                                                <span class="line-number">{{ String(index +
-                                                                    1).padStart(2, '0') }}</span>
-                                                                <span class="code-text" v-html="line"></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <!-- Project Icon Overlay -->
-                                        <div class="project-icon-overlay">
-                                            <Icon :icon="project.icon" />
-                                        </div>
+                                    <!-- Image Navigation -->
+                                    <div class="image-nav" v-if="project.gallery && project.gallery.length > 1">
+                                        <button class="image-nav-btn prev" @click="prevImage(project)"
+                                            :disabled="(currentImageIndex[project.id] || 0) === 0">
+                                            <Icon icon="mdi:chevron-left" />
+                                        </button>
+                                        <button class="image-nav-btn next" @click="nextImage(project)"
+                                            :disabled="(currentImageIndex[project.id] || 0) >= (project.gallery?.length - 1 || 0)">
+                                            <Icon icon="mdi:chevron-right" />
+                                        </button>
+                                    </div>
+                                </div>
 
-                                        <!-- Floating Elements -->
-                                        <div class="floating-tech">
-                                            <div class="tech-bubble"
-                                                v-for="(tech, index) in project.technologies.slice(0, 4)" :key="tech"
-                                                :style="{ animationDelay: `${index * 0.5}s` }">
-                                                {{ tech }}
-                                            </div>
-                                        </div>
+                                <!-- Thumbnail Strip -->
+                                <div class="thumbnail-strip" v-if="project.gallery && project.gallery.length > 1">
+                                    <div v-for="(image, index) in project.gallery" :key="index" class="thumbnail-item"
+                                        :class="{ active: (currentImageIndex[project.id] || 0) === index }"
+                                        @click="setCurrentImage(project, index)">
+                                        <img :src="image.thumbnail || image.url" :alt="image.caption" />
                                     </div>
                                 </div>
                             </div>
@@ -103,24 +76,6 @@
                                 <div class="tech-grid">
                                     <div class="tech-item" v-for="tech in project.technologies" :key="tech">
                                         <span class="tech-name">{{ tech }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Project Gallery -->
-                            <div class="project-gallery" v-if="project.gallery && project.gallery.length">
-                                <h4 class="gallery-title">Screenshots</h4>
-                                <div class="gallery-preview">
-                                    <div v-for="(image, index) in project.gallery.slice(0, 3)" :key="index"
-                                        class="gallery-thumb" @click="openGallery(project, index)">
-                                        <img :src="image.thumbnail || image.url" :alt="image.caption" loading="lazy" />
-                                        <div class="thumb-overlay">
-                                            <Icon icon="mdi:magnify" />
-                                        </div>
-                                    </div>
-                                    <div v-if="project.gallery.length > 3" class="gallery-more"
-                                        @click="openGallery(project, 0)">
-                                        <span>+{{ project.gallery.length - 3 }} more</span>
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, onMounted, onUnmounted, watch } from 'vue'
+    import { ref, onMounted, onUnmounted, watch, reactive } from 'vue'
     import { Icon } from '@iconify/vue'
     import type { Project } from '@/interfaces/projects'
 
@@ -214,6 +169,34 @@
     // Gallery handler
     const openGallery = (project: Project, index: number) => {
         emit('openGallery', project, index)
+    }
+
+    // Image management
+    const currentImageIndex = reactive<Record<number, number>>({})
+
+    const getCurrentImage = (project: Project) => {
+        if (!project.gallery || project.gallery.length === 0) return null
+        const index = currentImageIndex[project.id] || 0
+        return project.gallery[index]
+    }
+
+    const setCurrentImage = (project: Project, index: number) => {
+        currentImageIndex[project.id] = index
+    }
+
+    const nextImage = (project: Project) => {
+        if (!project.gallery) return
+        const current = currentImageIndex[project.id] || 0
+        if (current < project.gallery.length - 1) {
+            currentImageIndex[project.id] = current + 1
+        }
+    }
+
+    const prevImage = (project: Project) => {
+        const current = currentImageIndex[project.id] || 0
+        if (current > 0) {
+            currentImageIndex[project.id] = current - 1
+        }
     }
 
     // Autoplay functionality
@@ -325,6 +308,10 @@
             carouselContainer.value.addEventListener('mouseenter', handleMouseEnter)
             carouselContainer.value.addEventListener('mouseleave', handleMouseLeave)
         }
+        props.projects.forEach(project => {
+            currentImageIndex[project.id] = 0
+        })
+
     })
 
     onUnmounted(() => {
@@ -372,293 +359,157 @@
         min-height: 600px;
     }
 
-    /* Project Visual */
-    .project-visual {
-        position: relative;
-    }
-
-    .project-screen {
+    /* Gallery Styles */
+    .gallery-container {
         position: relative;
         border-radius: var(--radius-lg);
         overflow: hidden;
         background: var(--color-bg-dark);
         border: 2px solid rgba(var(--color-primary-rgb), 0.3);
-        box-shadow:
-            0 0 50px rgba(var(--color-primary-rgb), 0.2),
-            inset 0 0 20px rgba(var(--color-primary-rgb), 0.05);
     }
 
-    /* Browser Frame */
-    .browser-frame {
-        background: rgba(var(--color-surface-dark-rgb), 0.95);
-    }
-
-    .browser-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: var(--space-3) var(--space-4);
-        background: rgba(var(--color-bg-dark-rgb), 0.8);
-        border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.2);
-    }
-
-    .browser-controls {
-        display: flex;
-        gap: var(--space-2);
-    }
-
-    .control {
-        width: 12px;
-        height: 12px;
-        border-radius: var(--radius-full);
-    }
-
-    .control--close {
-        background: #ff5f57;
-    }
-
-    .control--minimize {
-        background: #ffbd2e;
-    }
-
-    .control--maximize {
-        background: #28ca42;
-    }
-
-    .browser-url {
-        background: rgba(var(--color-surface-dark-rgb), 0.8);
-        padding: var(--space-1) var(--space-3);
-        border-radius: var(--radius-sm);
-        font-size: var(--font-size-xs);
-        color: var(--color-text-muted);
-        border: 1px solid rgba(var(--color-primary-rgb), 0.2);
-        min-width: 200px;
-        text-align: center;
-    }
-
-    .browser-actions {
-        display: flex;
-        gap: var(--space-2);
-        color: var(--color-text-muted);
-    }
-
-    /* Code Preview */
-    .code-preview {
-        height: 400px;
+    .main-image-container {
         position: relative;
-    }
-
-    .code-editor {
-        display: flex;
-        height: 100%;
-    }
-
-    .editor-sidebar {
-        width: 200px;
-        background: rgba(var(--color-bg-dark-rgb), 0.9);
-        border-right: 1px solid rgba(var(--color-primary-rgb), 0.2);
-        padding: var(--space-4);
-    }
-
-    .file-tree {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-2);
-    }
-
-    .file-item {
-        display: flex;
-        align-items: center;
-        gap: var(--space-2);
-        color: var(--color-text-muted);
-        font-size: var(--font-size-sm);
-        padding: var(--space-1) var(--space-2);
-        border-radius: var(--radius-sm);
-        transition: var(--transition-colors);
-    }
-
-    .file-item:hover {
-        background: rgba(var(--color-primary-rgb), 0.1);
-        color: var(--color-white);
-    }
-
-    .editor-main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .editor-tabs {
-        display: flex;
-        background: rgba(var(--color-surface-dark-rgb), 0.8);
-        border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.2);
-    }
-
-    .tab {
-        display: flex;
-        align-items: center;
-        gap: var(--space-2);
-        padding: var(--space-2) var(--space-4);
-        background: rgba(var(--color-primary-rgb), 0.1);
-        color: var(--color-primary);
-        font-size: var(--font-size-sm);
-        border-right: 1px solid rgba(var(--color-primary-rgb), 0.2);
-    }
-
-    .editor-content {
-        flex: 1;
-        padding: var(--space-4);
+        aspect-ratio: 16/10;
         overflow: hidden;
     }
 
-    .code-lines {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-1);
+    .main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        cursor: pointer;
+        transition: var(--transition-all);
     }
 
-    .code-line {
+    .main-image:hover {
+        transform: scale(1.05);
+    }
+
+    .image-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom,
+                transparent 60%,
+                rgba(var(--color-bg-dark-rgb), 0.8) 100%);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding: var(--space-4);
+        opacity: 0;
+        transition: var(--transition-opacity);
+    }
+
+    .main-image-container:hover .image-overlay {
+        opacity: 1;
+    }
+
+    .gallery-info {
         display: flex;
         align-items: center;
-        gap: var(--space-3);
-        opacity: 0;
-        animation: fadeInLine 0.5s ease forwards;
-    }
-
-    .code-line:nth-child(1) {
-        animation-delay: 0.1s;
-    }
-
-    .code-line:nth-child(2) {
-        animation-delay: 0.2s;
-    }
-
-    .code-line:nth-child(3) {
-        animation-delay: 0.3s;
-    }
-
-    .code-line:nth-child(4) {
-        animation-delay: 0.4s;
-    }
-
-    .code-line:nth-child(5) {
-        animation-delay: 0.5s;
-    }
-
-    @keyframes fadeInLine {
-        to {
-            opacity: 1;
-        }
-    }
-
-    .line-number {
-        color: var(--color-text-muted);
-        font-size: var(--font-size-xs);
-        min-width: 20px;
-        text-align: right;
-    }
-
-    .code-text {
+        gap: var(--space-2);
         color: var(--color-white);
         font-size: var(--font-size-sm);
-        font-family: var(--font-mono);
-    }
-
-    /* Code syntax highlighting */
-    :deep(.keyword) {
-        color: #ff6b9d;
-    }
-
-    :deep(.variable) {
-        color: #c792ea;
-    }
-
-    :deep(.property) {
-        color: #82aaff;
-    }
-
-    :deep(.string) {
-        color: #c3e88d;
-    }
-
-    :deep(.method) {
-        color: #ffcb6b;
-    }
-
-    /* Project Icon Overlay */
-    .project-icon-overlay {
-        position: absolute;
-        bottom: var(--space-4);
-        right: var(--space-4);
-        width: 60px;
-        height: 60px;
-        background: rgba(var(--color-primary-rgb), 0.1);
-        border: 2px solid var(--color-primary);
-        border-radius: var(--radius-lg);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--color-primary);
-        font-size: var(--font-size-2xl);
+        background: rgba(var(--color-bg-dark-rgb), 0.8);
+        padding: var(--space-2) var(--space-3);
+        border-radius: var(--radius-md);
         backdrop-filter: blur(var(--blur-md));
     }
 
-    /* Floating Tech Bubbles */
-    .floating-tech {
+    .zoom-button {
+        background: rgba(var(--color-primary-rgb), 0.9);
+        color: var(--color-white);
+        border: none;
+        border-radius: var(--radius-full);
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition-all);
+    }
+
+    .zoom-button:hover {
+        background: var(--color-primary);
+        transform: scale(1.1);
+    }
+
+    .image-nav {
         position: absolute;
-        inset: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        left: var(--space-3);
+        right: var(--space-3);
+        display: flex;
+        justify-content: space-between;
         pointer-events: none;
     }
 
-    .tech-bubble {
-        position: absolute;
-        background: rgba(var(--color-primary-rgb), 0.1);
-        border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+    .image-nav-btn {
+        background: rgba(var(--color-bg-dark-rgb), 0.8);
         color: var(--color-primary);
-        padding: var(--space-1) var(--space-2);
+        border: 1px solid rgba(var(--color-primary-rgb), 0.3);
         border-radius: var(--radius-full);
-        font-size: var(--font-size-xs);
-        font-family: var(--font-mono);
-        backdrop-filter: blur(var(--blur-sm));
-        animation: floatBubble 4s ease-in-out infinite;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition-all);
+        backdrop-filter: blur(var(--blur-md));
+        pointer-events: auto;
+        opacity: 0;
     }
 
-    .tech-bubble:nth-child(1) {
-        top: 20%;
-        left: 10%;
-        animation-delay: 0s;
+    .main-image-container:hover .image-nav-btn {
+        opacity: 1;
     }
 
-    .tech-bubble:nth-child(2) {
-        top: 40%;
-        right: 15%;
-        animation-delay: 1s;
+    .image-nav-btn:hover:not(:disabled) {
+        background: rgba(var(--color-primary-rgb), 0.2);
+        transform: scale(1.1);
     }
 
-    .tech-bubble:nth-child(3) {
-        bottom: 30%;
-        left: 20%;
-        animation-delay: 2s;
+    .image-nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
     }
 
-    .tech-bubble:nth-child(4) {
-        bottom: 15%;
-        right: 25%;
-        animation-delay: 3s;
+    .thumbnail-strip {
+        display: flex;
+        gap: var(--space-2);
+        padding: var(--space-3);
+        background: rgba(var(--color-surface-dark-rgb), 0.9);
+        overflow-x: auto;
+        scrollbar-width: thin;
     }
 
-    @keyframes floatBubble {
+    .thumbnail-item {
+        flex-shrink: 0;
+        width: 60px;
+        height: 40px;
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: var(--transition-all);
+    }
 
-        0%,
-        100% {
-            transform: translateY(0px) scale(1);
-            opacity: 0.7;
-        }
+    .thumbnail-item.active {
+        border-color: var(--color-primary);
+    }
 
-        50% {
-            transform: translateY(-10px) scale(1.05);
-            opacity: 1;
-        }
+    .thumbnail-item:hover {
+        transform: scale(1.05);
+        border-color: rgba(var(--color-primary-rgb), 0.5);
+    }
+
+    .thumbnail-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     /* Project Actions */
@@ -959,53 +810,375 @@
         transform: scale(1.05);
     }
 
-    /* Responsive Design */
+    /* Responsive Design - Ottimizzato */
+    @media (max-width: 1200px) {
+        .project-showcase {
+            grid-template-columns: 1fr 0.8fr;
+            gap: var(--space-6);
+        }
+    }
+
+    /* Responsive Design - CORREZIONI per mobile */
     @media (max-width: 1024px) {
         .project-showcase {
             grid-template-columns: 1fr;
             gap: var(--space-6);
-        }
-
-        .code-editor {
-            flex-direction: column;
-        }
-
-        .editor-sidebar {
+            min-height: auto;
             width: 100%;
-            height: 100px;
+            /* Fix: Assicura larghezza contenuta */
+        }
+
+        .gallery-container {
+            order: -1;
+            width: 100%;
+            /* Fix: Evita overflow orizzontale */
+        }
+
+        .tech-grid {
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
         }
     }
 
     @media (max-width: 768px) {
         .carousel-slide {
             padding: var(--space-4);
+            /* Ridotto padding */
+            width: 100vw;
+            /* Fix: Forza larghezza viewport */
+            max-width: 100%;
+            /* Fix: Previene overflow */
+            box-sizing: border-box;
+            /* Fix: Include padding nel calcolo */
         }
 
         .project-showcase {
-            min-height: auto;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            /* Fix: Nasconde overflow orizzontale */
         }
 
-        .code-preview {
-            height: 300px;
+        .project-info {
+            padding: var(--space-4);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .gallery-container {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .main-image-container {
+            aspect-ratio: 4/3;
+            width: 100%;
+        }
+
+        .project-title {
+            font-size: var(--font-size-2xl);
+            word-wrap: break-word;
+            /* Fix: Previene overflow del testo */
+        }
+
+        .project-description {
+            font-size: var(--font-size-md);
+            word-wrap: break-word;
+            /* Fix: Previene overflow del testo */
         }
 
         .project-actions {
             flex-direction: column;
+            gap: var(--space-3);
+            width: 100%;
+        }
+
+        .action-button {
+            justify-content: center;
+            padding: var(--space-3) var(--space-4);
+            width: 100%;
+            /* Fix: Pulsanti full-width su mobile */
+            box-sizing: border-box;
         }
 
         .tech-grid {
-            grid-template-columns: repeat(2, 1fr);
+            width: 100%;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            /* Fix: Celle più piccole */
+            gap: var(--space-2);
+        }
+
+        .tech-item {
+            word-wrap: break-word;
+            min-width: 0;
+            /* Fix: Permette shrinking */
+        }
+
+        .thumbnail-strip {
+            padding: var(--space-2);
+            gap: var(--space-1);
+            width: 100%;
+            box-sizing: border-box;
         }
     }
 
     @media (max-width: 480px) {
-        .gallery-preview {
-            flex-direction: column;
+        .carousel-slide {
+            padding: var(--space-3);
+            /* Ulteriormente ridotto */
+            width: 100vw;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
-        .nav-button {
-            width: 40px;
-            height: 40px;
+        .project-info {
+            padding: var(--space-3);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .project-title {
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-3);
+            line-height: 1.2;
+            /* Fix: Line height più compatto */
+            hyphens: auto;
+            /* Fix: Hyphens per parole lunghe */
+        }
+
+        .project-description {
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--space-4);
+            line-height: 1.4;
+            hyphens: auto;
+        }
+
+        .project-meta {
+            flex-direction: column;
+            gap: var(--space-2);
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .main-image-container {
+            aspect-ratio: 16/12;
+            width: 100%;
+        }
+
+        .tech-grid {
+            grid-template-columns: 1fr 1fr;
+            /* Fix: Solo 2 colonne su mobile small */
+            gap: var(--space-2);
+            width: 100%;
+        }
+
+        .tech-item {
+            padding: var(--space-2) var(--space-1);
+            min-width: 0;
+            text-align: center;
+        }
+
+        .tech-name {
+            font-size: var(--font-size-xs);
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+
+        .action-button {
+            padding: var(--space-2) var(--space-3);
+            font-size: var(--font-size-sm);
+            width: 100%;
+            min-height: 44px;
+            /* Fix: Altezza minima touch-friendly */
+        }
+
+        .carousel-indicators {
+            gap: var(--space-2);
+            margin-top: var(--space-4);
+            padding: 0 var(--space-3);
+            /* Fix: Padding laterale */
+            box-sizing: border-box;
+        }
+
+        .indicator {
+            width: 30px;
+            height: 3px;
         }
     }
+
+    @media (max-width: 360px) {
+        .carousel-slide {
+            padding: var(--space-2);
+            /* Padding minimo */
+            width: 100vw;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .project-showcase {
+            gap: var(--space-3);
+            /* Gap ridotto */
+            width: 100%;
+        }
+
+        .project-info {
+            padding: var(--space-2);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .project-title {
+            font-size: var(--font-size-lg);
+            line-height: 1.1;
+            margin-bottom: var(--space-2);
+        }
+
+        .project-description {
+            font-size: var(--font-size-xs);
+            line-height: 1.3;
+            margin-bottom: var(--space-3);
+        }
+
+        .tech-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-1);
+            width: 100%;
+        }
+
+        .tech-item {
+            padding: var(--space-1);
+            min-width: 0;
+        }
+
+        .tech-name {
+            font-size: 11px;
+        }
+
+        .action-button {
+            padding: var(--space-2);
+            gap: var(--space-1);
+            font-size: var(--font-size-xs);
+            width: 100%;
+            min-height: 40px;
+        }
+
+        .project-meta {
+            gap: var(--space-1);
+            margin-bottom: var(--space-2);
+        }
+
+        .project-type,
+        .project-year {
+            padding: 4px var(--space-1);
+            font-size: 10px;
+        }
+    }
+
+    /* Landscape orientations on mobile */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .carousel-slide {
+            padding: var(--space-3) var(--space-4);
+            width: 100vw;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .main-image-container {
+            aspect-ratio: 16/9;
+        }
+
+        .project-showcase {
+            grid-template-columns: 1.2fr 1fr;
+            gap: var(--space-4);
+            width: 100%;
+        }
+    }
+
+    /* Very small devices */
+    @media (max-width: 320px) {
+        .carousel-slide {
+            padding: var(--space-1) var(--space-2);
+        }
+
+        .project-title {
+            font-size: var(--font-size-md);
+            line-height: 1.1;
+        }
+
+        .project-description {
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .tech-name {
+            font-size: 10px;
+        }
+
+        .action-button span {
+            display: none;
+            /* Nasconde testo, mostra solo icone */
+        }
+
+        .action-button {
+            min-width: 44px;
+            aspect-ratio: 1;
+            padding: var(--space-2);
+        }
+    }
+
+    /* Container principale fix */
+    .carousel-container {
+        overflow: hidden;
+        width: 100%;
+        max-width: 100%;
+        border-radius: var(--radius-xl);
+        background: rgba(var(--color-surface-dark-rgb), 0.3);
+        backdrop-filter: blur(var(--blur-md));
+        border: 1px solid rgba(var(--color-primary-rgb), 0.2);
+    }
+
+    .carousel-track {
+        display: flex;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+    }
+
+    /* Touch optimizations */
+    @media (hover: none) and (pointer: coarse) {
+        .image-nav-btn {
+            opacity: 1;
+            background: rgba(var(--color-bg-dark-rgb), 0.9);
+        }
+
+        .action-button:hover {
+            transform: none;
+        }
+
+        .action-button:active {
+            transform: scale(0.98);
+        }
+
+        .nav-button:hover {
+            transform: none;
+        }
+
+        .nav-button:active {
+            transform: scale(0.95);
+        }
+
+        .thumbnail-item:hover {
+            transform: none;
+        }
+    }
+
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2),
+    (min-resolution: 192dpi) {
+
+        .main-image,
+        .thumbnail-item img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+    }
+
 </style>

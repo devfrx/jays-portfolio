@@ -1,143 +1,182 @@
 <template>
     <div class="certification-showcase">
-        <div class="showcase-header">
-            <div class="header-info">
-                <Icon icon="mdi:certificate" class="header-icon" />
-                <div class="header-text">
-                    <h3 class="showcase-title">Professional Certifications</h3>
-                    <p class="showcase-subtitle">Validated expertise and continuous learning</p>
+        <!-- Terminal Header -->
+        <div class="terminal-header">
+            <div class="terminal-controls">
+                <span class="control control--close"></span>
+                <span class="control control--minimize"></span>
+                <span class="control control--maximize"></span>
+            </div>
+            <div class="terminal-title">certifications@portfolio:~$</div>
+        </div>
+
+        <!-- Command Line Interface -->
+        <div class="terminal-body">
+            <div class="terminal-line">
+                <span class="prompt">$</span>
+                <span class="command">ls -la certifications/</span>
+            </div>
+            <div class="terminal-output">
+                <div class="cert-stats">
+                    <span class="stat-item">total {{ certifications.length }} certificates</span>
+                    <span class="stat-item">{{ uniqueIssuers.length }} institutions</span>
+                    <span class="stat-item">{{ recentCertifications }} this year</span>
                 </div>
             </div>
-            <div class="achievement-counter">
-                <span class="counter-number">{{ certifications.length }}</span>
-                <span class="counter-label">Certifications</span>
+            <div class="terminal-line">
+                <span class="prompt">$</span>
+                <span class="command typing">cat certifications.json</span>
+                <span class="cursor">_</span>
             </div>
         </div>
 
-        <div class="certifications-grid">
-            <div v-for="(cert, index) in certifications" :key="cert.id" class="certification-card"
-                :class="`cert-${cert.level.toLowerCase()}`" :style="{ animationDelay: `${index * 0.1}s` }">
-                <!-- Certification Badge -->
-                <div class="cert-badge">
-                    <div class="badge-ring">
-                        <div class="badge-inner">
-                            <Icon :icon="cert.icon" class="cert-icon" :style="{ color: cert.color }" />
+        <!-- Certifications Matrix -->
+        <div class="certifications-matrix">
+            <div v-for="(cert, index) in certifications" :key="cert.id" class="cert-terminal"
+                :style="{ animationDelay: `${index * 0.1}s` }">
+                <!-- Terminal Window -->
+                <div class="cert-window">
+                    <div class="cert-window-header">
+                        <div class="window-controls">
+                            <span class="control control--close"></span>
+                            <span class="control control--minimize"></span>
+                            <span class="control control--maximize"></span>
+                        </div>
+                        <div class="window-title">{{ cert.id }}.cert</div>
+                        <div class="window-status">
+                            <span class="status-dot" :class="cert.expires ? 'status-warning' : 'status-active'"></span>
+                            <span class="status-text">{{ cert.expires ? 'expires' : 'permanent' }}</span>
                         </div>
                     </div>
-                    <div class="cert-level-badge" :class="`level-${cert.level.toLowerCase()}`">
-                        {{ cert.level }}
-                    </div>
-                </div>
 
-                <!-- Certification Content -->
-                <div class="cert-content">
-                    <div class="cert-header">
-                        <h4 class="cert-title">{{ cert.title }}</h4>
-                        <div class="cert-issuer">
-                            <span class="issuer-name">{{ cert.issuer }}</span>
-                            <div class="issuer-verified">
-                                <Icon icon="mdi:check-circle" />
-                                <span>Verified</span>
+                    <div class="cert-window-body">
+                        <!-- Certificate Header with Tech Icons -->
+                        <div class="cert-header">
+                            <div class="cert-icon-container">
+                                <div class="icon-matrix">
+                                    <div class="icon-grid">
+                                        <Icon :icon="cert.icon" class="cert-icon" :style="{ color: cert.color }" />
+
+                                        <div class="grid-dot" v-for="i in 9" :key="i"></div>
+                                    </div>
+                                </div>
+                                <div class="cert-level-indicator">
+                                    <div class="level-bar" :class="`level-${cert.level.toLowerCase()}`">
+                                        <span class="level-text">{{ cert.level.toUpperCase() }}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="cert-meta">
-                        <div class="cert-date">
-                            <Icon icon="mdi:calendar" />
-                            <span>{{ formatDate(cert.date) }}</span>
+                        <!-- Certificate Data -->
+                        <div class="cert-data">
+                            <div class="data-line">
+                                <span class="data-key">"title":</span>
+                                <span class="data-value">"{{ cert.title }}"</span>
+                            </div>
+                            <div class="data-line">
+                                <span class="data-key">"issuer":</span>
+                                <span class="data-value">"{{ cert.issuer }}"</span>
+                                <Icon icon="mdi:check-decagram" class="verified-icon" />
+                            </div>
+                            <div class="data-line">
+                                <span class="data-key">"issued":</span>
+                                <span class="data-value">"{{ formatDate(cert.date) }}"</span>
+                            </div>
+                            <div class="data-line" v-if="cert.expires">
+                                <span class="data-key">"expires":</span>
+                                <span class="data-value data-warning">"{{ formatDate(cert.expires) }}"</span>
+                            </div>
                         </div>
-                        <div class="cert-validity" v-if="cert.expires">
-                            <Icon icon="mdi:clock-outline" />
-                            <span>Valid until {{ formatDate(cert.expires) }}</span>
-                        </div>
-                        <div class="cert-permanent" v-else>
-                            <Icon icon="mdi:infinity" />
-                            <span>Permanent</span>
-                        </div>
-                    </div>
 
-                    <!-- Skills Covered -->
-                    <div class="cert-skills" v-if="cert.skills">
-                        <h5 class="skills-title">Skills Covered</h5>
-                        <div class="skills-list">
-                            <span v-for="skill in cert.skills" :key="skill" class="skill-tag">
-                                {{ skill }}
-                            </span>
+                        <!-- Skills Matrix -->
+                        <div class="skills-matrix" v-if="cert.skills">
+                            <div class="matrix-header">
+                                <span class="matrix-label">[SKILLS_ARRAY]</span>
+                            </div>
+                            <div class="skills-grid">
+                                <div v-for="(skill, skillIndex) in cert.skills" :key="skill" class="skill-chip"
+                                    :style="{ animationDelay: `${skillIndex * 0.1}s` }">
+                                    <span class="skill-index">[{{ skillIndex }}]</span>
+                                    <span class="skill-name">{{ skill }}</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Certification Actions -->
-                    <div class="cert-actions">
-                        <button class="action-button view-cert" @click="viewCertificate(cert)"
-                            v-if="cert.credentialUrl">
-                            <Icon icon="mdi:eye" />
-                            <span>View Certificate</span>
-                        </button>
-                        <button class="action-button verify-cert" @click="verifyCertificate(cert)"
-                            v-if="cert.verificationId">
-                            <Icon icon="mdi:shield-check" />
-                            <span>Verify</span>
-                        </button>
+                        <!-- Action Commands -->
+                        <div class="cert-commands">
+                            <button class="command-button" @click="viewCertificate(cert)" v-if="cert.credentialUrl">
+                                <Icon icon="mdi:console-line" />
+                                <span>./view-certificate.sh</span>
+                            </button>
+                            <button class="command-button verify-cmd" @click="verifyCertificate(cert)"
+                                v-if="cert.verificationId">
+                                <Icon icon="mdi:shield-check" />
+                                <span>./verify.sh {{ cert.verificationId }}</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Certification Effects -->
-                <div class="cert-glow"></div>
-                <div class="cert-particles">
-                    <div class="particle" v-for="i in 6" :key="i"></div>
+                <!-- Matrix Rain Effect -->
+                <div class="matrix-rain">
+                    <div class="rain-column" v-for="i in 3" :key="i"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Achievement Timeline -->
-        <div class="achievement-timeline">
-            <h4 class="timeline-title">Certification Journey</h4>
-            <div class="timeline-track">
-                <div v-for="(cert, index) in sortedCertifications" :key="cert.id" class="timeline-item"
+        <!-- Timeline Console -->
+        <div class="timeline-console">
+            <div class="console-header">
+                <Icon icon="mdi:timeline" />
+                <span>Certification Timeline</span>
+            </div>
+            <div class="timeline-matrix">
+                <div v-for="(cert, index) in sortedCertifications" :key="cert.id" class="timeline-entry"
                     :style="{ left: `${getTimelinePosition(cert.date)}%` }">
-                    <div class="timeline-marker">
+                    <div class="timeline-node">
                         <Icon :icon="cert.icon" :style="{ color: cert.color }" />
                     </div>
-                    <div class="timeline-tooltip">
-                        <strong>{{ cert.title }}</strong>
-                        <span>{{ cert.date }}</span>
+                    <div class="timeline-data">
+                        <div class="data-title">{{ cert.title }}</div>
+                        <div class="data-timestamp">{{ cert.date }}</div>
                     </div>
                 </div>
             </div>
-            <div class="timeline-labels">
-                <span class="timeline-start">{{ earliestYear }}</span>
-                <span class="timeline-end">{{ currentYear }}</span>
+            <div class="timeline-axis">
+                <span class="axis-label">{{ earliestYear }}</span>
+                <span class="axis-label">{{ currentYear }}</span>
             </div>
         </div>
 
-        <!-- Statistics -->
-        <div class="cert-statistics">
-            <div class="stat-item">
-                <div class="stat-icon">
-                    <Icon icon="mdi:trending-up" />
-                </div>
+        <!-- System Stats -->
+        <div class="system-stats">
+            <div class="stat-terminal">
                 <div class="stat-content">
-                    <div class="stat-number">{{ certificationsByLevel.advanced + certificationsByLevel.expert }}</div>
-                    <div class="stat-label">Advanced+</div>
+                    <Icon icon="mdi:trending-up" class="stat-icon" />
+                    <div class="stat-info">
+                        <span class="stat-number">{{ certificationsByLevel.advanced + certificationsByLevel.expert
+                            }}</span>
+                        <span class="stat-label">ADVANCED+</span>
+                    </div>
                 </div>
             </div>
-            <div class="stat-item">
-                <div class="stat-icon">
-                    <Icon icon="mdi:school" />
-                </div>
+            <div class="stat-terminal">
                 <div class="stat-content">
-                    <div class="stat-number">{{ uniqueIssuers.length }}</div>
-                    <div class="stat-label">Institutions</div>
+                    <Icon icon="mdi:school" class="stat-icon" />
+                    <div class="stat-info">
+                        <span class="stat-number">{{ uniqueIssuers.length }}</span>
+                        <span class="stat-label">INSTITUTIONS</span>
+                    </div>
                 </div>
             </div>
-            <div class="stat-item">
-                <div class="stat-icon">
-                    <Icon icon="mdi:calendar-check" />
-                </div>
+            <div class="stat-terminal">
                 <div class="stat-content">
-                    <div class="stat-number">{{ recentCertifications }}</div>
-                    <div class="stat-label">This Year</div>
+                    <Icon icon="mdi:calendar-check" class="stat-icon" />
+                    <div class="stat-info">
+                        <span class="stat-number">{{ recentCertifications }}</span>
+                        <span class="stat-label">THIS_YEAR</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -147,9 +186,7 @@
 <script setup lang="ts">
     import { computed } from 'vue'
     import { Icon } from '@iconify/vue'
-    import type {
-        Certification,
-    } from "@/interfaces/skills";
+    import type { Certification } from "@/interfaces/skills"
 
     interface Props {
         certifications: Certification[]
@@ -223,95 +260,124 @@
         background: rgba(var(--color-surface-dark-rgb), 0.5);
         border: 1px solid rgba(var(--color-primary-rgb), 0.2);
         border-radius: var(--radius-xl);
-        padding: var(--space-8);
+        overflow: hidden;
         backdrop-filter: blur(var(--blur-md));
-    }
-
-    /* Header */
-    .showcase-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: var(--space-8);
-        padding-bottom: var(--space-6);
-        border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.2);
-    }
-
-    .header-info {
-        display: flex;
-        align-items: center;
-        gap: var(--space-4);
-    }
-
-    .header-icon {
-        width: 48px;
-        height: 48px;
-        color: var(--color-primary);
-        font-size: var(--font-size-2xl);
-        background: rgba(var(--color-primary-rgb), 0.1);
-        border: 2px solid var(--color-primary);
-        border-radius: var(--radius-lg);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .showcase-title {
-        color: var(--color-white);
-        font-size: var(--font-size-2xl);
-        font-weight: var(--font-weight-bold);
-        margin: 0 0 var(--space-1) 0;
-    }
-
-    .showcase-subtitle {
-        color: var(--color-text-muted);
-        font-size: var(--font-size-sm);
-        margin: 0;
-    }
-
-    .achievement-counter {
-        text-align: center;
-        background: rgba(var(--color-primary-rgb), 0.1);
-        border: 2px solid var(--color-primary);
-        border-radius: var(--radius-lg);
-        padding: var(--space-4);
-        min-width: 80px;
-    }
-
-    .counter-number {
-        display: block;
-        font-size: var(--font-size-3xl);
-        font-weight: var(--font-weight-bold);
-        color: var(--color-primary);
         font-family: var(--font-mono);
     }
 
-    .counter-label {
-        display: block;
-        font-size: var(--font-size-xs);
-        color: var(--color-text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+    /* Terminal Header */
+    .terminal-header {
+        background: rgba(var(--color-bg-dark-rgb), 0.9);
+        padding: var(--space-3) var(--space-4);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.2);
     }
 
-    /* Certifications Grid */
-    .certifications-grid {
+    .terminal-controls {
+        display: flex;
+        gap: var(--space-2);
+    }
+
+    .control {
+        width: 12px;
+        height: 12px;
+        border-radius: var(--radius-full);
+    }
+
+    .control--close {
+        background: #ff5f57;
+    }
+
+    .control--minimize {
+        background: #ffbd2e;
+    }
+
+    .control--maximize {
+        background: #28ca42;
+    }
+
+    .terminal-title {
+        color: var(--color-primary);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+    }
+
+    /* Terminal Body */
+    .terminal-body {
+        padding: var(--space-6);
+        border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.1);
+    }
+
+    .terminal-line {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        margin-bottom: var(--space-2);
+    }
+
+    .prompt {
+        color: var(--color-primary);
+        font-weight: var(--font-weight-bold);
+    }
+
+    .command {
+        color: var(--color-white);
+    }
+
+    .typing {
+        animation: typewriter 3s steps(20) infinite;
+    }
+
+    @keyframes typewriter {
+
+        0%,
+        50% {
+            opacity: 1;
+        }
+
+        51%,
+        100% {
+            opacity: 0.7;
+        }
+    }
+
+    .cursor {
+        color: var(--color-primary);
+        animation: blink 1s infinite;
+    }
+
+    .terminal-output {
+        margin: var(--space-3) 0;
+        padding-left: var(--space-6);
+    }
+
+    .cert-stats {
+        display: flex;
+        gap: var(--space-4);
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+        background: rgba(var(--color-primary-rgb), 0.1);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-sm);
+        border: 1px solid rgba(var(--color-primary-rgb), 0.2);
+    }
+
+    /* Certifications Matrix */
+    .certifications-matrix {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
         gap: var(--space-6);
-        margin-bottom: var(--space-8);
+        padding: var(--space-8);
     }
 
-    .certification-card {
-        background: linear-gradient(135deg,
-                rgba(var(--color-surface-dark-rgb), 0.95),
-                rgba(var(--color-bg-dark-rgb), 0.8));
-        border: 1px solid rgba(var(--color-primary-rgb), 0.3);
-        border-radius: var(--radius-xl);
-        padding: var(--space-6);
+    .cert-terminal {
         position: relative;
-        overflow: hidden;
-        transition: var(--transition-all);
         animation: slideInUp 0.6s ease-out forwards;
         opacity: 0;
     }
@@ -328,410 +394,467 @@
         }
     }
 
-    .certification-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(var(--color-primary-rgb), 0.3);
-    }
-
-    .certification-card:hover .cert-glow {
-        opacity: 1;
-    }
-
-    .certification-card:hover .particle {
-        animation-play-state: running;
-    }
-
-    /* Certification Badge */
-    .cert-badge {
+    /* Certificate Window */
+    .cert-window {
+        background: linear-gradient(135deg,
+                rgba(var(--color-bg-dark-rgb), 0.95),
+                rgba(var(--color-surface-dark-rgb), 0.8));
+        border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        transition: var(--transition-all);
         position: relative;
+    }
+
+    .cert-window:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0 30px rgba(var(--color-primary-rgb), 0.3);
+        border-color: var(--color-primary);
+    }
+
+    .cert-window-header {
+        background: rgba(var(--color-bg-dark-rgb), 0.8);
+        padding: var(--space-3) var(--space-4);
         display: flex;
         align-items: center;
-        justify-content: center;
-        margin-bottom: var(--space-4);
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.2);
     }
 
-    .badge-ring {
-        width: 80px;
-        height: 80px;
-        background: conic-gradient(from 0deg, var(--color-primary), var(--color-accent), var(--color-primary));
-        border-radius: var(--radius-full);
-        padding: 3px;
-        position: relative;
-        animation: rotate 10s linear infinite;
+    .window-controls {
+        display: flex;
+        gap: var(--space-2);
     }
 
-    .badge-inner {
-        width: 100%;
-        height: 100%;
-        background: var(--color-bg-dark);
-        border-radius: var(--radius-full);
+    .window-title {
+        color: var(--color-accent);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+    }
+
+    .window-status {
         display: flex;
         align-items: center;
-        justify-content: center;
+        gap: var(--space-2);
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: var(--radius-full);
+        animation: pulse 2s infinite;
+    }
+
+    .status-active {
+        background: var(--color-success);
+    }
+
+    .status-warning {
+        background: var(--color-warning);
+    }
+
+    .status-text {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+        text-transform: uppercase;
+    }
+
+    /* Certificate Body */
+    .cert-window-body {
+        padding: var(--space-6);
+    }
+
+    .cert-header {
+        margin-bottom: var(--space-6);
+    }
+
+    .cert-icon-container {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+    }
+
+    .icon-matrix {
+        position: relative;
+        width: 60px;
+        height: 60px;
     }
 
     .cert-icon {
-        font-size: var(--font-size-2xl);
-    }
-
-    .cert-level-badge {
-        position: absolute;
-        bottom: -8px;
-        right: -8px;
-        padding: var(--space-1) var(--space-2);
-        border-radius: var(--radius-full);
-        font-size: var(--font-size-xs);
-        font-weight: var(--font-weight-bold);
-        text-transform: uppercase;
-        border: 2px solid var(--color-bg-dark);
-    }
-
-    .cert-level-badge.level-beginner {
-        background: #4CAF50;
-        color: white;
-    }
-
-    .cert-level-badge.level-intermediate {
-        background: #FF9800;
-        color: white;
-    }
-
-    .cert-level-badge.level-advanced {
-        background: #2196F3;
-        color: white;
-    }
-
-    .cert-level-badge.level-expert,
-    .cert-level-badge.level-certified {
-        background: #9C27B0;
-        color: white;
-    }
-
-    /* Content */
-    .cert-content {
+        font-size: var(--font-size-3xl);
         position: relative;
         z-index: 2;
     }
 
-    .cert-header {
-        margin-bottom: var(--space-4);
-    }
-
-    .cert-title {
-        color: var(--color-white);
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-bold);
-        margin: 0 0 var(--space-2) 0;
-        line-height: var(--line-height-tight);
-    }
-
-    .cert-issuer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .issuer-name {
-        color: var(--color-primary);
-        font-weight: var(--font-weight-semibold);
-    }
-
-    .issuer-verified {
-        display: flex;
-        align-items: center;
-        gap: var(--space-1);
-        color: var(--color-success);
-        font-size: var(--font-size-xs);
-    }
-
-    .cert-meta {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-2);
-        margin-bottom: var(--space-4);
-    }
-
-    .cert-date,
-    .cert-validity,
-    .cert-permanent {
-        display: flex;
-        align-items: center;
-        gap: var(--space-2);
-        color: var(--color-text-muted);
-        font-size: var(--font-size-sm);
-    }
-
-    .cert-permanent {
-        color: var(--color-success);
-    }
-
-    /* Skills */
-    .cert-skills {
-        margin-bottom: var(--space-4);
-    }
-
-    .skills-title {
-        color: var(--color-white);
-        font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-semibold);
-        margin: 0 0 var(--space-2) 0;
-    }
-
-    .skills-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--space-1);
-    }
-
-    .skill-tag {
-        background: rgba(var(--color-accent-rgb), 0.1);
-        color: var(--color-accent);
-        padding: var(--space-1) var(--space-2);
-        border-radius: var(--radius-sm);
-        font-size: var(--font-size-xs);
-        font-family: var(--font-mono);
-        border: 1px solid rgba(var(--color-accent-rgb), 0.2);
-    }
-
-    /* Actions */
-    .cert-actions {
-        display: flex;
-        gap: var(--space-2);
-    }
-
-    .action-button {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: var(--space-2);
-        padding: var(--space-2) var(--space-3);
-        border-radius: var(--radius-md);
-        font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-medium);
-        transition: var(--transition-all);
-        cursor: pointer;
-    }
-
-    .view-cert {
-        background: rgba(var(--color-primary-rgb), 0.1);
-        border: 1px solid rgba(var(--color-primary-rgb), 0.3);
-        color: var(--color-primary);
-    }
-
-    .view-cert:hover {
-        background: rgba(var(--color-primary-rgb), 0.2);
-        transform: translateY(-1px);
-    }
-
-    .verify-cert {
-        background: rgba(var(--color-success-rgb), 0.1);
-        border: 1px solid rgba(var(--color-success-rgb), 0.3);
-        color: var(--color-success);
-    }
-
-    .verify-cert:hover {
-        background: rgba(var(--color-success-rgb), 0.2);
-        transform: translateY(-1px);
-    }
-
-    /* Effects */
-    .cert-glow {
+    .icon-grid {
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at center,
-                rgba(var(--color-primary-rgb), 0.2),
-                transparent 70%);
-        border-radius: var(--radius-xl);
-        opacity: 0;
-        transition: var(--transition-opacity);
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px;
+        opacity: 0.3;
     }
 
-    .cert-particles {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-    }
-
-    .particle {
-        position: absolute;
-        width: 4px;
-        height: 4px;
+    .grid-dot {
         background: var(--color-primary);
         border-radius: var(--radius-full);
-        animation: float 6s ease-in-out infinite;
-        animation-play-state: paused;
+        animation: gridPulse 3s ease-in-out infinite;
     }
 
-    .particle:nth-child(1) {
-        top: 20%;
-        left: 10%;
-        animation-delay: 0s;
+    .grid-dot:nth-child(odd) {
+        animation-delay: 0.5s;
     }
 
-    .particle:nth-child(2) {
-        top: 40%;
-        right: 15%;
+    .grid-dot:nth-child(even) {
         animation-delay: 1s;
     }
 
-    .particle:nth-child(3) {
-        bottom: 30%;
-        left: 20%;
-        animation-delay: 2s;
-    }
-
-    .particle:nth-child(4) {
-        bottom: 20%;
-        right: 25%;
-        animation-delay: 3s;
-    }
-
-    .particle:nth-child(5) {
-        top: 60%;
-        left: 50%;
-        animation-delay: 4s;
-    }
-
-    .particle:nth-child(6) {
-        top: 80%;
-        right: 40%;
-        animation-delay: 5s;
-    }
-
-    @keyframes float {
+    @keyframes gridPulse {
 
         0%,
         100% {
-            transform: translateY(0px) scale(1);
-            opacity: 0.7;
+            opacity: 0.2;
+            transform: scale(0.8);
         }
 
         50% {
-            transform: translateY(-10px) scale(1.2);
+            opacity: 0.8;
+            transform: scale(1.2);
+        }
+    }
+
+    .cert-level-indicator {
+        flex: 1;
+    }
+
+    .level-bar {
+        width: 100%;
+        height: 8px;
+        border-radius: var(--radius-full);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .level-beginner {
+        background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    }
+
+    .level-intermediate {
+        background: linear-gradient(90deg, #FF9800, #FFC107);
+    }
+
+    .level-advanced {
+        background: linear-gradient(90deg, #2196F3, #03DAC6);
+    }
+
+    .level-expert,
+    .level-certified {
+        background: linear-gradient(90deg, #9C27B0, #E91E63);
+    }
+
+    .level-text {
+        position: absolute;
+        top: -20px;
+        right: 0;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-primary);
+    }
+
+    /* Certificate Data */
+    .cert-data {
+        margin-bottom: var(--space-6);
+    }
+
+    .data-line {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        margin-bottom: var(--space-2);
+        font-size: var(--font-size-sm);
+    }
+
+    .data-key {
+        color: var(--color-accent);
+        min-width: 80px;
+    }
+
+    .data-value {
+        color: var(--color-white);
+        flex: 1;
+    }
+
+    .data-warning {
+        color: var(--color-warning);
+    }
+
+    .verified-icon {
+        color: var(--color-success);
+        font-size: var(--font-size-sm);
+    }
+
+    /* Skills Matrix */
+    .skills-matrix {
+        margin-bottom: var(--space-6);
+    }
+
+    .matrix-header {
+        margin-bottom: var(--space-3);
+    }
+
+    .matrix-label {
+        color: var(--color-primary);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-bold);
+    }
+
+    .skills-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+    }
+
+    .skill-chip {
+        background: rgba(var(--color-primary-rgb), 0.1);
+        border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+        border-radius: var(--radius-sm);
+        padding: var(--space-1) var(--space-2);
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        transition: var(--transition-all);
+        animation: chipFadeIn 0.5s ease-out forwards;
+        opacity: 0;
+    }
+
+    @keyframes chipFadeIn {
+        to {
             opacity: 1;
         }
     }
 
-    @keyframes rotate {
-        to {
-            transform: rotate(360deg);
+    .skill-chip:hover {
+        background: rgba(var(--color-primary-rgb), 0.2);
+        transform: translateY(-1px);
+    }
+
+    .skill-index {
+        color: var(--color-accent);
+        font-size: var(--font-size-xs);
+    }
+
+    .skill-name {
+        color: var(--color-white);
+        font-size: var(--font-size-xs);
+    }
+
+    /* Commands */
+    .cert-commands {
+        display: flex;
+        gap: var(--space-3);
+    }
+
+    .command-button {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        background: rgba(var(--color-primary-rgb), 0.1);
+        border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+        border-radius: var(--radius-md);
+        color: var(--color-primary);
+        font-size: var(--font-size-sm);
+        font-family: var(--font-mono);
+        cursor: pointer;
+        transition: var(--transition-all);
+    }
+
+    .command-button:hover {
+        background: rgba(var(--color-primary-rgb), 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.3);
+    }
+
+    .verify-cmd {
+        background: rgba(var(--color-success-rgb), 0.1);
+        border-color: rgba(var(--color-success-rgb), 0.3);
+        color: var(--color-success);
+    }
+
+    .verify-cmd:hover {
+        background: rgba(var(--color-success-rgb), 0.2);
+        box-shadow: 0 0 10px rgba(var(--color-success-rgb), 0.3);
+    }
+
+    /* Matrix Rain Effect */
+    .matrix-rain {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        opacity: 0;
+        transition: var(--transition-opacity);
+    }
+
+    .cert-window:hover .matrix-rain {
+        opacity: 0.1;
+    }
+
+    .rain-column {
+        position: absolute;
+        top: -100%;
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(to bottom,
+                transparent,
+                var(--color-primary),
+                transparent);
+        animation: matrixRain 3s linear infinite;
+    }
+
+    .rain-column:nth-child(1) {
+        left: 20%;
+        animation-delay: 0s;
+    }
+
+    .rain-column:nth-child(2) {
+        left: 50%;
+        animation-delay: 1s;
+    }
+
+    .rain-column:nth-child(3) {
+        left: 80%;
+        animation-delay: 2s;
+    }
+
+    @keyframes matrixRain {
+        0% {
+            transform: translateY(0);
+        }
+
+        100% {
+            transform: translateY(200%);
         }
     }
 
-    /* Timeline */
-    .achievement-timeline {
-        margin-bottom: var(--space-8);
-        padding: var(--space-6);
-        background: rgba(var(--color-bg-dark-rgb), 0.5);
+    /* Timeline Console */
+    .timeline-console {
+        margin: var(--space-8);
+        background: rgba(var(--color-bg-dark-rgb), 0.8);
         border: 1px solid rgba(var(--color-primary-rgb), 0.2);
         border-radius: var(--radius-lg);
+        padding: var(--space-6);
     }
 
-    .timeline-title {
-        color: var(--color-white);
-        font-size: var(--font-size-lg);
+    .console-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--color-primary);
         font-weight: var(--font-weight-bold);
-        margin: 0 0 var(--space-4) 0;
-        text-align: center;
+        margin-bottom: var(--space-4);
     }
 
-    .timeline-track {
+    .timeline-matrix {
         position: relative;
         height: 60px;
-        background: linear-gradient(to right,
+        background: linear-gradient(90deg,
                 rgba(var(--color-primary-rgb), 0.1),
                 rgba(var(--color-primary-rgb), 0.3),
                 rgba(var(--color-primary-rgb), 0.1));
-        border-radius: var(--radius-full);
-        margin: var(--space-4) 0;
+        border-radius: var(--radius-sm);
+        margin-bottom: var(--space-4);
     }
 
-    .timeline-item {
+    .timeline-entry {
         position: absolute;
         top: 50%;
         transform: translate(-50%, -50%);
     }
 
-    .timeline-marker {
-        width: 40px;
-        height: 40px;
+    .timeline-node {
+        width: 32px;
+        height: 32px;
         background: var(--color-bg-dark);
-        border: 3px solid var(--color-primary);
+        border: 2px solid var(--color-primary);
         border-radius: var(--radius-full);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: var(--font-size-lg);
+        font-size: var(--font-size-sm);
         cursor: pointer;
         transition: var(--transition-all);
     }
 
-    .timeline-marker:hover {
+    .timeline-node:hover {
         transform: scale(1.1);
-        box-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.5);
+        box-shadow: 0 0 15px rgba(var(--color-primary-rgb), 0.5);
     }
 
-    .timeline-tooltip {
+    .timeline-data {
         position: absolute;
-        top: -50px;
+        top: -40px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(var(--color-bg-dark-rgb), 0.95);
-        border: 1px solid rgba(var(--color-primary-rgb), 0.3);
-        border-radius: var(--radius-md);
-        padding: var(--space-2) var(--space-3);
-        white-space: nowrap;
-        font-size: var(--font-size-xs);
+        text-align: center;
         opacity: 0;
-        pointer-events: none;
         transition: var(--transition-opacity);
+        pointer-events: none;
     }
 
-    .timeline-marker:hover+.timeline-tooltip,
-    .timeline-marker:hover~.timeline-tooltip,
-    .timeline-item:hover .timeline-tooltip {
+    .timeline-entry:hover .timeline-data {
         opacity: 1;
     }
 
-    .timeline-tooltip strong {
+    .data-title {
         color: var(--color-white);
-        display: block;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-bold);
+        white-space: nowrap;
     }
 
-    .timeline-tooltip span {
+    .data-timestamp {
         color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
     }
 
-    .timeline-labels {
+    .timeline-axis {
         display: flex;
         justify-content: space-between;
-        font-size: var(--font-size-sm);
-        color: var(--color-text-muted);
-        font-family: var(--font-mono);
     }
 
-    /* Statistics */
-    .cert-statistics {
+    .axis-label {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+    }
+
+    /* System Stats */
+    .system-stats {
         display: flex;
         justify-content: center;
         gap: var(--space-6);
+        padding: var(--space-8);
+        border-top: 1px solid rgba(var(--color-primary-rgb), 0.1);
     }
 
-    .stat-item {
-        display: flex;
-        align-items: center;
-        gap: var(--space-3);
-        background: rgba(var(--color-surface-dark-rgb), 0.8);
+    .stat-terminal {
+        background: rgba(var(--color-bg-dark-rgb), 0.8);
         border: 1px solid rgba(var(--color-primary-rgb), 0.2);
-        border-radius: var(--radius-lg);
+        border-radius: var(--radius-md);
         padding: var(--space-4);
         transition: var(--transition-all);
     }
 
-    .stat-item:hover {
+    .stat-terminal:hover {
         transform: translateY(-2px);
         box-shadow: 0 0 15px rgba(var(--color-primary-rgb), 0.3);
+    }
+
+    .stat-content {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
     }
 
     .stat-icon {
@@ -740,50 +863,68 @@
     }
 
     .stat-number {
+        color: var(--color-white);
         font-size: var(--font-size-xl);
         font-weight: var(--font-weight-bold);
-        color: var(--color-white);
         font-family: var(--font-mono);
     }
 
     .stat-label {
-        font-size: var(--font-size-sm);
         color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Animations */
+    @keyframes blink {
+
+        0%,
+        50% {
+            opacity: 1;
+        }
+
+        51%,
+        100% {
+            opacity: 0;
+        }
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
     }
 
     /* Responsive */
     @media (max-width: 768px) {
-        .showcase-header {
-            flex-direction: column;
-            text-align: center;
-            gap: var(--space-4);
-        }
-
-        .certifications-grid {
+        .certifications-matrix {
             grid-template-columns: 1fr;
+            padding: var(--space-4);
         }
 
-        .cert-statistics {
+        .system-stats {
             flex-direction: column;
             align-items: center;
         }
 
-        .timeline-track {
-            margin: var(--space-6) 0;
+        .timeline-console {
+            margin: var(--space-4);
         }
     }
 
     @media (max-width: 480px) {
-        .certification-card {
-            padding: var(--space-4);
+        .cert-commands {
+            flex-direction: column;
         }
 
-        .badge-ring {
-            width: 60px;
-            height: 60px;
-        }
-
-        .cert-actions {
+        .cert-stats {
             flex-direction: column;
         }
     }

@@ -62,57 +62,10 @@
                             <div class="section-line"></div>
                         </div>
 
-                        <div class="skills-categories">
-                            <div class="category-card" v-for="category in detailedSkills" :key="category.category">
-                                <div class="category-header">
-                                    <div class="category-info">
-                                        <Icon :icon="category.icon" class="category-icon"
-                                            :style="{ color: category.color }" />
-                                        <h3 class="category-title">{{ category.category }}</h3>
-                                    </div>
-                                    <div class="category-count">{{ category.skills.length }} skills</div>
-                                </div>
-
-                                <div class="skills-grid">
-                                    <div class="skill-card" v-for="skill in category.skills" :key="skill.name">
-                                        <div class="skill-header">
-                                            <div class="skill-info">
-                                                <Icon :icon="skill.icon" class="skill-icon"
-                                                    :style="{ color: skill.color }" />
-                                                <div class="skill-details">
-                                                    <h4 class="skill-name">{{ skill.name }}</h4>
-                                                    <!-- <div class="skill-meta">
-                                                        <span class="skill-experience">{{ skill.experience }}</span>
-                                                        <span class="skill-projects">{{ skill.projects }}
-                                                            projects</span>
-                                                    </div> -->
-                                                </div>
-                                            </div>
-                                            <div class="skill-level-badge">{{ skill.level }}%</div>
-                                        </div>
-
-                                        <div class="skill-progress-container">
-                                            <div class="skill-progress-bar">
-                                                <div class="skill-progress-fill"
-                                                    :style="{ width: skill.level + '%', backgroundColor: skill.color }">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <p class="skill-description">{{ skill.description }}</p>
-
-                                        <!-- <div class="skill-actions">
-                                            <div class="skill-tags">
-                                                <span class="skill-tag">{{ skill.experience }}</span>
-                                                <span class="skill-tag">{{ skill.projects }} projects</span>
-                                            </div>
-                                        </div> -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <SkillsShowcase :skill-categories="detailedSkills" />
                     </div>
                 </section>
+
 
                 <!-- Learning Journey -->
                 <section class="learning-journey">
@@ -252,6 +205,7 @@
     import { Icon } from "@iconify/vue"
     import { useSkillsData } from '@/composables/useSkillsData'
     import CertificationShowcase from '@/components/CertificationShowcase.vue'
+    import SkillsShowcase from '@/components/SkillsShowcase.vue'
 
     const {
         skillsStats,
@@ -543,162 +497,15 @@
         font-size: var(--font-size-sm);
     }
 
-    .skills-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: var(--space-6);
-    }
 
-    /* Skill Cards */
-    .skill-card {
-        background: rgba(var(--color-surface-dark-rgb), 0.8);
-        border: 1px solid rgba(var(--color-primary-rgb), 0.3);
-        border-radius: var(--radius-lg);
-        padding: var(--space-6);
-        transition: var(--transition-all);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .skill-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 0 25px rgba(var(--color-primary-rgb), 0.3);
-    }
-
-    .skill-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
-        opacity: 0;
-        transition: var(--transition-opacity);
-    }
-
-    .skill-card:hover::before {
-        opacity: 1;
-    }
-
-    .skill-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: var(--space-4);
-    }
-
-    .skill-info {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: var(--space-3);
-        flex: 1;
-    }
-
-    .skill-icon {
-        font-size: var(--font-size-2xl);
-        flex-shrink: 0;
-    }
-
-    .skill-details {
-        flex: 1;
-    }
-
-    .skill-name {
-        color: var(--color-white);
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-bold);
-        margin: 0 !important;
-    }
-
-    .skill-meta {
-        display: flex;
-        gap: var(--space-3);
-        font-size: var(--font-size-sm);
-        color: var(--color-text-muted);
-    }
-
-    .skill-level-badge {
-        background: rgba(var(--color-primary-rgb), 0.2);
-        color: var(--color-primary);
-        padding: var(--space-1) var(--space-2);
-        border-radius: var(--radius-sm);
-        font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-bold);
-    }
-
-    .skill-progress-container {
-        margin: var(--space-4) 0;
-    }
-
-    .skill-progress-bar {
-        height: 6px;
-        background: rgba(var(--color-primary-rgb), 0.1);
-        border-radius: var(--radius-full);
-        overflow: hidden;
-    }
-
-    .skill-progress-fill {
-        height: 100%;
-        border-radius: var(--radius-full);
-        transition: width 1s ease-out;
-        position: relative;
-    }
-
-    .skill-progress-fill::after {
-        content: '';
-        position: absolute;
-        border-radius: var(--radius-full);
-        top: 0;
-        right: 0;
-        width: 90px;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5));
-        animation: shimmer 10s infinite;
-    }
-
-    @keyframes shimmer {
-        0% {
-            transform: translateX(-100%);
-        }
-
-        50% {
-            transform: translateX(0%);
-        }
-
-        100% {
-            transform: translateX(-100%);
-        }
-
-    }
-
-    .skill-description {
-        color: var(--color-text-muted);
-        line-height: var(--line-height-relaxed);
-        margin-bottom: var(--space-4);
-        font-size: var(--font-size-sm);
-    }
-
-    .skill-actions {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .skill-tags {
-        display: flex;
-        gap: var(--space-2);
-    }
-
-    .skill-tag {
-        background: rgba(var(--color-primary-rgb), 0.1);
-        color: var(--color-primary);
-        padding: var(--space-1) var(--space-2);
-        border-radius: var(--radius-sm);
-        font-size: var(--font-size-xs);
+    /* Skills Grid */
+    .skills-page {
+        min-height: 100vh;
+        background: var(--color-bg-dark);
+        color: var(--color-text-dark);
         font-family: var(--font-mono);
     }
+
 
     /* Learning Journey */
     .journey-timeline {

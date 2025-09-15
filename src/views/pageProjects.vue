@@ -60,42 +60,11 @@
                     <div class="section-container">
                         <div class="section-header">
                             <span class="section-number">02.</span>
-                            <h2 class="section-title">Experiences</h2>
+                            <h2 class="section-title">Work Experience</h2>
                             <div class="section-line"></div>
                         </div>
 
-                        <div class="experience-timeline">
-                            <div class="experience-item" v-for="(job, index) in workExperience" :key="index">
-                                <div class="experience-marker">
-                                    <div class="marker-dot"></div>
-                                    <div class="marker-line" v-if="index !== workExperience.length - 1"></div>
-                                </div>
-                                <div class="experience-content">
-                                    <div class="experience-header">
-                                        <div class="job-info">
-                                            <h3 class="job-title">{{ job.title }}</h3>
-                                            <div class="company-info">
-                                                <span class="company-name">{{ job.company }}</span>
-                                                <span class="job-type">{{ job.type }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="job-period">{{ job.period }}</div>
-                                    </div>
-                                    <p class="job-description">{{ job.description }}</p>
-                                    <div class="job-achievements">
-                                        <ul>
-                                            <li v-for="achievement in job.achievements" :key="achievement">{{
-                                                achievement }}
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="job-tech">
-                                        <span v-for="tech in job.technologies" :key="tech" class="tech-tag">{{ tech
-                                            }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <WorkExperienceShowcase :work-experience="workExperience" />
                     </div>
                 </section>
 
@@ -157,6 +126,8 @@
     import { useProjectsData } from '@/composables/useProjectsData'
     import ProjectCarousel from '@/components/ProjectCarousel.vue'
     import ImageGallery from '@/components/ImageGallery.vue'
+    import WorkExperienceShowcase from '@/components/WorkExperienceShowcase.vue'
+
 
     const {
         featuredProjects,
@@ -372,136 +343,6 @@
         background: rgba(var(--color-primary-rgb), 0.3);
     }
 
-    /* Work Experience - mantieni gli stili esistenti */
-    .experience-timeline {
-        position: relative;
-    }
-
-    .experience-item {
-        display: flex;
-        gap: var(--space-6);
-        margin-bottom: var(--space-8);
-    }
-
-    .experience-marker {
-        position: relative;
-        flex-shrink: 0;
-    }
-
-    .marker-dot {
-        width: 16px;
-        height: 16px;
-        background: var(--color-primary);
-        border-radius: var(--radius-full);
-        border: 3px solid var(--color-bg-dark);
-        box-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.5);
-    }
-
-    .marker-line {
-        position: absolute;
-        top: 16px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 2px;
-        height: calc(100% + var(--space-8));
-        background: linear-gradient(to bottom, var(--color-primary), transparent);
-    }
-
-    .experience-content {
-        flex: 1;
-        background: rgba(var(--color-surface-dark-rgb), 0.5);
-        border: 1px solid rgba(var(--color-primary-rgb), 0.2);
-        border-radius: var(--radius-lg);
-        padding: var(--space-6);
-    }
-
-    .experience-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: var(--space-4);
-    }
-
-    .job-title {
-        font-size: var(--font-size-xl);
-        font-weight: var(--font-weight-bold);
-        color: var(--color-white);
-        margin-bottom: var(--space-1);
-    }
-
-    .company-info {
-        display: flex;
-        gap: var(--space-3);
-        align-items: center;
-    }
-
-    .company-name {
-        color: var(--color-primary);
-        font-weight: var(--font-weight-medium);
-    }
-
-    .job-type {
-        background: rgba(var(--color-primary-rgb), 0.1);
-        color: var(--color-primary);
-        padding: var(--space-1) var(--space-2);
-        border-radius: var(--radius-sm);
-        font-size: var(--font-size-xs);
-    }
-
-    .job-period {
-        color: var(--color-text-muted);
-        font-size: var(--font-size-sm);
-        white-space: nowrap;
-    }
-
-    .job-description {
-        color: var(--color-text-muted);
-        line-height: var(--line-height-relaxed);
-        margin-bottom: var(--space-4);
-    }
-
-    .job-achievements ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    .job-achievements li {
-        color: var(--color-text-muted);
-        margin-bottom: var(--space-2);
-        position: relative;
-        padding-left: var(--space-6);
-    }
-
-    .job-achievements li::before {
-        content: '▶';
-        color: var(--color-primary);
-        position: absolute;
-        left: 0;
-        font-size: var(--font-size-xs);
-    }
-
-    .job-tech {
-        margin-top: var(--space-4);
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--space-2);
-    }
-
-    .project-tech {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--space-2);
-    }
-
-    .tech-tag {
-        background: rgba(var(--color-primary-rgb), 0.1);
-        color: var(--color-primary);
-        padding: var(--space-1) var(--space-3);
-        border-radius: var(--radius-sm);
-        font-size: var(--font-size-xs);
-        font-family: var(--font-mono);
-    }
-
     /* Filter Tabs */
     .filter-tabs {
         display: flex;
@@ -591,6 +432,21 @@
         color: var(--color-text-muted);
         line-height: var(--line-height-relaxed);
         margin-bottom: var(--space-4);
+    }
+
+    .project-tech {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+    }
+
+    .tech-tag {
+        background: rgba(var(--color-accent-rgb), 0.1);
+        color: var(--color-accent);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        font-size: var(--font-size-sm);
+        font-family: var(--font-mono);
     }
 
     /* Responsive Design */
