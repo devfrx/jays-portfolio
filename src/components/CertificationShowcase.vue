@@ -147,20 +147,7 @@
 <script setup lang="ts">
     import { computed } from 'vue'
     import { Icon } from '@iconify/vue'
-
-    interface Certification {
-        id: string
-        title: string
-        issuer: string
-        date: string
-        expires?: string
-        level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert' | 'Certified'
-        icon: string
-        color: string
-        credentialUrl?: string
-        verificationId?: string
-        skills?: string[]
-    }
+    import type { Certification } from '@/interfaces/certifications'
 
     interface Props {
         certifications: Certification[]

@@ -1,4 +1,5 @@
 import { ref, computed } from "vue";
+import type { Certification } from "@/interfaces/certifications";
 
 export function useSkillsData() {
   const skillsStats = ref([
@@ -215,7 +216,7 @@ export function useSkillsData() {
     },
   ]);
 
-  const certifications = ref([
+  const certifications = ref<Certification[]>([
     {
       id: "vue-cert",
       title: "Vue.js Certification",
